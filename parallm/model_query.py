@@ -34,5 +34,6 @@ def query_model_all(file_path, models):
         lambda row: query_model(row["prompt"], row["model"]), axis=1
     )
 
+    # print(f"Test print: {combined_df}")
     print("Processing time:", time.time() - t0)
     return combined_df
