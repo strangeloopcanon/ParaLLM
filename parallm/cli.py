@@ -1,5 +1,5 @@
 # cli!
-import sys
+import pandas as pd
 import argparse
 from parallm import model_query
 
@@ -21,7 +21,7 @@ def main():
     print(f"\n Readable table for humans: {result_df}\n")
     # Output the result as CSV to stdout.
     print(f"\n Readable table for machines: \n")
-    print(result_df.to_csv(index=False))
-
+    print(pd.DataFrame(result_df).to_csv(index=False))
+    
 if __name__ == "__main__":
     main()
