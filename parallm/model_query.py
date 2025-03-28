@@ -23,28 +23,12 @@ def query_model_all(file_path, models):
     """
     t0 = time.time()
     prompts_df = pd.read_csv(file_path)
-    prompts = prompts_df["prompt"].str.strip().str.lower().values
+    prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
 
     # Normalize models list
     models = pd.Series(models).str.strip().str.lower()
-    # models_df = pd.DataFrame({"model": models})
-    # combined_df = prompts_df.merge(models_df, how='cross')
-
-    # combined_df["response"] = combined_df.apply(
-        # lambda row: query_model(row["prompt"], row["model"]), axis=1
-    # )
-
-    num_prompts = len(prompts)
-    num_models = len(models)
-    total_rows = num_prompts * num_models
-
-    combined_prompts = [prompts[i // num_models] for i in range(total_rows)]
-    combined_models = [models[i % num_models] for i in range(total_rows)]
-
-    combined_df = pd.DataFrame({
-        "prompt": combined_prompts,
-        "model": combined_models
-    })
+    models_df = pd.DataFrame({"model": models})
+    combined_df = prompts_df.merge(models_df, how='cross')
 
     combined_df["response"] = combined_df.apply(
         lambda row: query_model(row["prompt"], row["model"]), axis=1
