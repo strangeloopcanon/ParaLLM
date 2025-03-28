@@ -26,7 +26,13 @@ def query_model_all(file_path, models):
     prompts = prompts_df["prompt"].str.strip().str.lower().values
 
     # Normalize models list
-    models = pd.Series(models).str.strip().str.lower().values
+    models = pd.Series(models).str.strip().str.lower()
+    # models_df = pd.DataFrame({"model": models})
+    # combined_df = prompts_df.merge(models_df, how='cross')
+
+    # combined_df["response"] = combined_df.apply(
+        # lambda row: query_model(row["prompt"], row["model"]), axis=1
+    # )
 
     num_prompts = len(prompts)
     num_models = len(models)
