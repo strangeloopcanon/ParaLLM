@@ -1,6 +1,7 @@
 # cli!
+import sys
 import argparse
-from . import model_query
+from parallm import model_query
 
 def main():
     parser = argparse.ArgumentParser(
@@ -17,7 +18,9 @@ def main():
     args = parser.parse_args()
 
     result_df = model_query.query_model_all(args.prompts, args.models)
+    print(f"\n Readable table for humans: {result_df}\n")
     # Output the result as CSV to stdout.
+    print(f"\n Readable table for machines: \n")
     print(result_df.to_csv(index=False))
 
 if __name__ == "__main__":
