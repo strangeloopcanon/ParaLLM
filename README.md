@@ -32,7 +32,8 @@ parallm --prompts path/to/prompts.csv --models gpt-4o gemini-2.5-pro-exp-03-25 c
 ```bash
 from parallm import query_model_all
 
-df = query_model_all("data/prompts.csv", ["gpt-4", "gemini-2.0-flash"])
+df = query_model_all("data/prompts.csv",
+["gpt-4", "gemini-2.0-flash"])
 print(df)
 ```
 
