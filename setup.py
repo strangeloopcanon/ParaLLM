@@ -34,11 +34,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.7', # Specify compatible Python versions
-    license="MIT", # Short license name
-    # Include the license file in source distributions (good practice)
-    # 'license_files' is preferred for newer setuptools, but 'license' is essential.
-    # Setuptools often includes LICENSE automatically if found, but being explicit is safer for sdists.
-    # If you encounter issues with LICENSE not being included in sdist, add:
-    # license_files = ('LICENSE',), # Tuple of license file names
+    python_requires='>=3.7', 
+    # license="MIT",
 )
