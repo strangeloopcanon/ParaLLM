@@ -23,10 +23,17 @@ pip install e .
 You would also need to install SimonW's llm package, and set up the keys.
 
 ## Usage
-Once installed, you can use the `query-models` command from your terminal. For example:
+Once installed, you can use the `parallm` command from your terminal. For example:
 
 ```bash
-query-models --prompts path/to/prompts.csv --models gpt-4o gemini-2.5-pro-exp-03-25 claude-3.7-sonnet
+parallm --prompts path/to/prompts.csv --models gpt-4o gemini-2.5-pro-exp-03-25 claude-3.7-sonnet
+```
+**Python API**: After you install, you can, for instance, run this in a python script.
+```bash
+from parallm import query_model_all
+
+df = query_model_all("data/prompts.csv", ["gpt-4", "gemini-2.0-flash"])
+print(df)
 ```
 
 This command:
