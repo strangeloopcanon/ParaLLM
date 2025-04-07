@@ -1,6 +1,6 @@
+# setup.py
 import setuptools
 
-# Read the contents of your README file
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
@@ -11,29 +11,25 @@ setuptools.setup(
     author_email="rohit.krishnan@email.com",
     description="CLI tool for querying multiple models with prompts from a CSV",
     long_description=long_description,
-    long_description_content_type="text/markdown", # Important for PyPI rendering
+    long_description_content_type="text/markdown",
     url="https://github.com/strangeloopcanon/parallm",
-    # Find packages automatically in the current directory, excluding tests/data
     packages=setuptools.find_packages(exclude=["data*", "tests*"]),
-    # Specify dependencies
     install_requires=[
         "pandas",
         "python-dotenv",
         "bodo",
         "llm",
     ],
-    # Define the command-line script
     entry_points={
         'console_scripts': [
             'query-models=parallm.cli:main',
         ],
     },
-    # Classifiers help users find your project
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.7', 
-    # license="MIT",
+    python_requires='>=3.7',
+    license="MIT",
 )
