@@ -22,6 +22,7 @@ def main():
     # Output the result as CSV to stdout.
     print(f"\n Readable table for machines: \n")
     print(pd.DataFrame(result_df).to_csv(index=False))
+    pd.DataFrame(result_df).to_csv("output.csv", index=False)
     
 if __name__ == "__main__":
     main()

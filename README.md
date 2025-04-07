@@ -8,18 +8,22 @@ ParaLLM is a command-line tool that queries multiple language models using promp
 - **Simple CLI Interface:** Run your queries directly from the terminal.
 
 ## Installation
-Clone the repository and install the package locally:
+
+```bash
+pip install parallm
+```
+
+Or clone the repository and install the package locally:
 
 ```bash
 git clone https://github.com/strangeloopcanon/parallm.git
 cd parallm
 pip install e .
 ```
+You would also need to install SimonW's llm package, and set up the keys.
 
 ## Usage
 Once installed, you can use the `query-models` command from your terminal. For example:
-
-You would also need to install SimonW's llm package, and set up the keys.
 
 ```bash
 query-models --prompts path/to/prompts.csv --models gpt-4o gemini-2.5-pro-exp-03-25 claude-3.7-sonnet
