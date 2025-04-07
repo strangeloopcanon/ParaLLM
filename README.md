@@ -48,8 +48,5 @@ ParaLLM relies on the following Python packages:
 
 These dependencies are automatically installed when you install ParaLLM.
 
-## License
-MIT License
-
 ## Author
 Rohit Krishnan
