@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "build", "twine"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+license-files = []  # override the default behavior
+
+[project]
+name = "parallm"
+version = "0.1.0"
+description = "CLI tool for querying multiple models with prompts from a CSV"
+authors = [
+  { name = "Rohit Krishnan", email = "rohit.krishnan@gmail.com" }
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = [
+  "bodo==2025.3.3",
+  "llm==0.23",
+  "pandas==2.2.3",
+  "python-dotenv==1.1.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/strangeloopcanon/parallm"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["parallm*"]
+exclude = ["data*", "tests*"]
+
+[project.scripts]
+query-models = "parallm.cli:main"
