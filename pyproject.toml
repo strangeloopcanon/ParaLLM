@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "parallm"
+version = "0.1.0"
+description = "CLI tool for querying multiple models with prompts from a CSV"
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "MIT" }
+authors = [
+    { name = "Rohit Krishnan", email = "rohit.krishnan@email.com" }
+]
+urls = { "Homepage" = "https://github.com/strangeloopcanon/parallm" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "pandas",
+    "python-dotenv",
+    "bodo",
+    "llm"
+]
+
+[project.scripts]
+query-models = "parallm.cli:main"
+
+[tool.setuptools.packages.find]
+exclude = ["data*", "tests*"]
