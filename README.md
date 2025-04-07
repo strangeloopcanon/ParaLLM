@@ -33,6 +33,7 @@ This command:
 - Reads the prompts from the specified CSV file (the file should have a header named `prompt`).
 - Creates a query for each combination of prompt and provided model names.
 - Outputs a CSV with columns for `prompt`, `model`, and `response`.
+- It will save the output into 'output.csv'
 
 ## CSV Format
 Your `prompts.csv` file should have a header as "prompt". Example:
