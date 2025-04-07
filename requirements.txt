@@ -1,6 +1,6 @@
-bodo
-llm
-pandas
-python-dotenv
-setuptools
-
+bodo==2025.3.3
+llm==0.23
+pandas==2.2.3
+python-dotenv==1.1.0
+setuptools==65.5.0
+setuptools==78.1.0
