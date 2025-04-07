@@ -7,7 +7,7 @@ license-files = []  # override the default behavior
 
 [project]
 name = "parallm"
-version = "0.1.0"
+version = "0.1.1"
 description = "CLI tool for querying multiple models with prompts from a CSV"
 authors = [
   { name = "Rohit Krishnan", email = "rohit.krishnan@gmail.com" }
