@@ -23,12 +23,8 @@ def query_model(prompt, model_given="gpt-4o-mini", schema=None):
     """
     model = llm.get_model(model_given)
     
-    if schema is None:
-        response = model.prompt(prompt)
-        return response.text()
-    else:
-        response = model.prompt(prompt, schema=schema)
-        return response.text()
+    response = model.prompt(prompt, schema=schema)
+    return response.text()
 
 def query_model_json(prompt, model_given="gpt-4o-mini", schema=None):
     """
