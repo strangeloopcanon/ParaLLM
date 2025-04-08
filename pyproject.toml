@@ -7,8 +7,8 @@ license-files = []  # override the default behavior
 
 [project]
 name = "parallm"
-version = "0.1.3"
-description = "CLI tool for querying multiple models with prompts from a CSV"
+version = "0.1.5"
+description = "CLI tool for querying multiple models with prompts from a CSV with schema support"
 authors = [
   { name = "Rohit Krishnan", email = "rohit.krishnan@gmail.com" }
 ]
@@ -20,7 +20,8 @@ dependencies = [
   "bodo==2025.3.3",
   "llm==0.23",
   "pandas==2.2.3",
-  "python-dotenv==1.1.0"
+  "python-dotenv==1.1.0",
+  "pydantic>=2.0.0"
 ]
 
 [project.urls]
@@ -33,3 +34,4 @@ exclude = ["data*", "tests*"]
 
 [project.scripts]
 parallm = "parallm.cli:main"
+llm-query = "parallm.cli:query"
