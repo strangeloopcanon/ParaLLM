@@ -46,6 +46,7 @@ def query_model_json(prompt, model_given="gpt-4o-mini", schema=None):
     result = query_model(prompt, model_given, schema)
     return json.loads(result)
 
+@bodo.jit
 def query_model_all(file_path, models, schema=None):
     """
     Reads the prompts from `file_path` and a list of model names,
@@ -56,28 +57,16 @@ def query_model_all(file_path, models, schema=None):
         models: List of model names to query
         schema: Optional schema to format responses as JSON
     """
-    # Note: We've temporarily removed the @bodo.jit decorator for simplicity
-    # while testing with schemas
     t0 = time.time()
     prompts_df = pd.read_csv(file_path)
     prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
 
-    # Normalize models list
-    if isinstance(models, list):
-        models = [model.strip().lower() for model in models]
-    else:
-        models = pd.Series(models).str.strip().str.lower().tolist()
+    models = pd.Series(models).str.strip().str.lower().tolist()
     
     models_df = pd.DataFrame({"model": models})
     combined_df = prompts_df.merge(models_df, how='cross')
 
-    # Process with or without schema
-    if schema is None:
-        combined_df["response"] = combined_df.apply(
-            lambda row: query_model(row["prompt"], row["model"]), axis=1
-        )
-    else:
-        combined_df["response"] = combined_df.apply(
+    combined_df["response"] = combined_df.apply(
             lambda row: query_model(row["prompt"], row["model"], schema), axis=1
         )
 
