@@ -36,6 +36,7 @@ parallm --prompts data/prompts.csv --models gpt-4o-mini claude-3-sonnet-20240229
 
 # Using a JSON schema for structured output
 parallm --prompts data/prompts.csv --models gpt-4o-mini --schema '{
+  "type": "object",
   "properties": {
     "answer": {"type": "string"},
     "confidence": {"type": "number", "minimum": 0, "maximum": 1}
@@ -61,6 +62,7 @@ llm-query "What is the capital of France?" --model claude-3-opus-20240229
 
 # Get structured JSON response using inline schema
 llm-query "Describe a nice dog" --schema '{
+  "type": "object",
   "properties": {
     "name": {"type": "string"},
     "age": {"type": "integer"},
@@ -100,12 +102,12 @@ from parallm import query_model_json
 
 # Using JSON schema
 schema = {
+    "type": "object",
     "properties": {
-        "name": {"type": "string"},
-        "age": {"type": "integer"},
-        "is_friendly": {"type": "boolean"}
+        "answer": {"type": "string"},
+        "confidence": {"type": "number"}
     },
-    "required": ["name", "age", "is_friendly"]
+    "required": ["answer", "confidence"]
 }
 
 result = query_model_json("Describe a nice dog", schema=schema)
@@ -152,6 +154,7 @@ print(df)
 
 # With JSON schema
 schema = {
+    "type": "object",
     "properties": {
         "answer": {"type": "string"},
         "confidence": {"type": "number"}
