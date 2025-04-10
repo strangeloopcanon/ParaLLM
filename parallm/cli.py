@@ -6,7 +6,16 @@ import sys
 import time
 from parallm import model_query
 
-def cli(mode="batch"):
+def cli(mode=None):
+    # If mode is not specified, try to detect it
+    if mode is None:
+        # Check if we have any non-flag arguments (potential prompt)
+        args = [arg for arg in sys.argv[1:] if not arg.startswith('--')]
+        if args and not any(arg.startswith('--') for arg in sys.argv[1:]):
+            mode = "single"
+        else:
+            mode = "batch"
+
     if mode == "single":
         parser = argparse.ArgumentParser(
             description="Query a model with a single prompt."
