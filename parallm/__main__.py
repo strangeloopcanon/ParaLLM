@@ -4,13 +4,12 @@ Main entry point for direct module execution.
 This allows running the package with 'python -m parallm <args>'
 """
 import sys
-from parallm.cli import main, query
+from parallm.cli import cli
 
 if __name__ == "__main__":
-    # Determine which command to run based on first argument
-    if len(sys.argv) > 1 and sys.argv[1] == "query":
-        # Remove the 'query' argument to match the expected format
+    # If first argument is 'single', remove it and run in single mode
+    if len(sys.argv) > 1 and sys.argv[1] == "single":
         sys.argv.pop(1)
-        query()
+        cli(mode="single")
     else:
-        main()
+        cli(mode="batch")

@@ -7,7 +7,7 @@ license-files = []  # override the default behavior
 
 [project]
 name = "parallm"
-version = "0.1.9"
+version = "0.1.10"
 description = "CLI tool for querying multiple models with prompts from a CSV with schema support"
 authors = [
   { name = "Rohit Krishnan", email = "rohit.krishnan@gmail.com" }
@@ -33,5 +33,4 @@ include = ["parallm*"]
 exclude = ["data*", "tests*"]
 
 [project.scripts]
-parallm = "parallm.cli:main"
-llm-query = "parallm.cli:query"
+parallm = "parallm.cli:cli"

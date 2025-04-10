@@ -7,7 +7,7 @@ ParaLLM is a command-line tool and Python package for efficiently querying langu
 - **Multi-Model Querying:** Query multiple LLMs simultaneously, comparing their outputs
 - **CSV Input/Output:** Use CSV files for batch processing of prompts
 - **Structured JSON Output:** Get responses formatted to JSON schemas or Pydantic models
-- **Single-Query Mode:** Use `llm-query` for quick one-off queries with schema support
+- **Single-Query Mode:** Use `parallm single` for quick one-off queries with schema support
 - **High Performance:** Leverages Bodo for parallel execution of queries
 
 ## Installation
@@ -51,17 +51,17 @@ parallm --prompts data/prompts.csv --models gpt-4o-mini --schema schema.json
 parallm --prompts data/prompts.csv --models gpt-4o-mini --pydantic models.py:ResponseModel
 ```
 
-### Single Query Tool
+### Single Query Mode
 
 ```bash
 # Basic query
-llm-query "What is the capital of France?"
+parallm single "What is the capital of France?"
 
 # Specify a different model
-llm-query "What is the capital of France?" --model claude-3-opus-20240229
+parallm single "What is the capital of France?" --model claude-3-opus-20240229
 
 # Get structured JSON response using inline schema
-llm-query "Describe a nice dog" --schema '{
+parallm single "Describe a nice dog" --schema '{
   "type": "object",
   "properties": {
     "name": {"type": "string"},
@@ -73,10 +73,10 @@ llm-query "Describe a nice dog" --schema '{
 }'
 
 # Using schema from a file
-llm-query "List the top 5 programming languages" --schema schemas/languages.json
+parallm single "List the top 5 programming languages" --schema schemas/languages.json
 
 # Using a Pydantic model
-llm-query "Describe a car" --pydantic models.py:Car
+parallm single "Describe a car" --pydantic models.py:Car
 ```
 
 ## Python API Usage
