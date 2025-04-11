@@ -5,6 +5,7 @@ import json
 import sys
 import time
 from parallm import model_query
+from parallm import bedrock_query
 
 def cli(mode=None):
     # If mode is not specified, try to detect it
@@ -37,7 +38,60 @@ def cli(mode=None):
             help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
         )
         args = parser.parse_args()
-        handle_single_query(args)
+        handle_single_query(args, aws=(mode == "aws"))
+    elif mode == "aws":
+        parser = argparse.ArgumentParser(
+            description="Query an AWS Bedrock model with a single prompt or in batch mode."
+        )
+        subparsers = parser.add_subparsers(dest="command", help="Command to run")
+        
+        # AWS Single mode
+        single_parser = subparsers.add_parser("single", help="Send a single prompt to AWS Bedrock")
+        single_parser.add_argument(
+            "prompt", type=str,
+            help="The prompt to send to the AWS Bedrock model."
+        )
+        single_parser.add_argument(
+            "--model", type=str, default="anthropic.claude-3-sonnet-20240229",
+            help="The AWS Bedrock model ID to query (default: anthropic.claude-3-sonnet-20240229)."
+        )
+        single_parser.add_argument(
+            "--schema", type=str,
+            help="JSON schema file path or JSON string for structured output."
+        )
+        single_parser.add_argument(
+            "--pydantic", type=str,
+            help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
+        )
+        
+        # AWS Batch mode
+        batch_parser = subparsers.add_parser("batch", help="Process batch prompts with AWS Bedrock")
+        batch_parser.add_argument(
+            "--prompts", type=str, required=True,
+            help="Path to the prompts CSV file."
+        )
+        batch_parser.add_argument(
+            "--models", type=str, nargs='+', required=True,
+            help="List of AWS Bedrock model IDs to query (space separated)."
+        )
+        batch_parser.add_argument(
+            "--schema", type=str,
+            help="JSON schema file path or JSON string for structured output."
+        )
+        batch_parser.add_argument(
+            "--pydantic", type=str,
+            help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
+        )
+        
+        args = parser.parse_args()
+        
+        if args.command == "single":
+            handle_single_query(args, aws=True)
+        elif args.command == "batch":
+            handle_batch_query(args, aws=True)
+        else:
+            parser.print_help()
+            sys.exit(1)
     else:  # batch mode
         parser = argparse.ArgumentParser(
             description="Query multiple models with prompts from a CSV file."
@@ -87,21 +141,31 @@ def load_schema(schema_arg, pydantic_arg):
             sys.exit(1)
     return None
 
-def handle_single_query(args):
+def handle_single_query(args, aws=False):
     schema = load_schema(args.schema, args.pydantic)
     try:
+        if aws:
+            query_module = bedrock_query
+        else:
+            query_module = model_query
+            
         if schema is None:
-            result = model_query.query_model(args.prompt, args.model)
+            result = query_module.query_model(args.prompt, args.model)
             print(result)
         else:
-            result = model_query.query_model_json(args.prompt, args.model, schema)
+            result = query_module.query_model_json(args.prompt, args.model, schema)
             print(json.dumps(result, indent=2))
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
 
-def handle_batch_query(args):
+def handle_batch_query(args, aws=False):
     schema = load_schema(args.schema, args.pydantic)
+    
+    if aws:
+        query_module = bedrock_query
+    else:
+        query_module = model_query
     
     if schema is not None:
         print("Schema provided. Running queries sequentially (non-parallel)...")
@@ -115,7 +179,7 @@ def handle_batch_query(args):
             combined_df = prompts_df.merge(models_df, how='cross')
 
             combined_df["response"] = combined_df.apply(
-                lambda row: model_query.query_model(row["prompt"], row["model"], schema),
+                lambda row: query_module.query_model(row["prompt"], row["model"], schema),
                 axis=1
             )
             result_df = combined_df
@@ -127,7 +191,7 @@ def handle_batch_query(args):
     else:
         print("No schema provided. Running queries in parallel using Bodo...")
         try:
-            result_df = model_query.query_model_all(args.prompts, args.models, schema)
+            result_df = query_module.query_model_all(args.prompts, args.models, schema)
         except Exception as e:
             print(f"\nError during parallel processing: {e}")
             sys.exit(1)

@@ -1,0 +1,89 @@
+modelName,modelId,providerName,inputModalities,outputModalities,responseStreamingSupported,customizationsSupported,inferenceTypesSupported,modelLifecycle.status
+Titan Text Large,amazon.titan-tg1-large,Amazon,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Titan Text Embeddings v2,amazon.titan-embed-g1-text-02,Amazon,TEXT,EMBEDDING,,,ON_DEMAND,ACTIVE
+Titan Text G1 - Lite,amazon.titan-text-lite-v1:0:4k,Amazon,TEXT,TEXT,True,FINE_TUNING|CONTINUED_PRE_TRAINING,PROVISIONED,ACTIVE
+Titan Text G1 - Lite,amazon.titan-text-lite-v1,Amazon,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Titan Text G1 - Express,amazon.titan-text-express-v1:0:8k,Amazon,TEXT,TEXT,True,FINE_TUNING|CONTINUED_PRE_TRAINING,PROVISIONED,ACTIVE
+Titan Text G1 - Express,amazon.titan-text-express-v1,Amazon,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Nova Pro,amazon.nova-pro-v1:0,Amazon,TEXT|IMAGE|VIDEO,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Nova Lite,amazon.nova-lite-v1:0,Amazon,TEXT|IMAGE|VIDEO,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Nova Micro,amazon.nova-micro-v1:0,Amazon,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Titan Embeddings G1 - Text,amazon.titan-embed-text-v1:2:8k,Amazon,TEXT,EMBEDDING,False,,PROVISIONED,ACTIVE
+Titan Embeddings G1 - Text,amazon.titan-embed-text-v1,Amazon,TEXT,EMBEDDING,False,,ON_DEMAND,ACTIVE
+Titan Text Embeddings V2,amazon.titan-embed-text-v2:0,Amazon,TEXT,EMBEDDING,False,,ON_DEMAND,ACTIVE
+Titan Multimodal Embeddings G1,amazon.titan-embed-image-v1:0,Amazon,TEXT|IMAGE,EMBEDDING,,FINE_TUNING,PROVISIONED,ACTIVE
+Titan Multimodal Embeddings G1,amazon.titan-embed-image-v1,Amazon,TEXT|IMAGE,EMBEDDING,,,ON_DEMAND,ACTIVE
+Titan Image Generator G1,amazon.titan-image-generator-v1:0,Amazon,TEXT|IMAGE,IMAGE,,FINE_TUNING,PROVISIONED,ACTIVE
+Titan Image Generator G1,amazon.titan-image-generator-v1,Amazon,TEXT|IMAGE,IMAGE,,,ON_DEMAND,ACTIVE
+Titan Image Generator G1 v2,amazon.titan-image-generator-v2:0,Amazon,TEXT|IMAGE,IMAGE,,FINE_TUNING,PROVISIONED|ON_DEMAND,ACTIVE
+Rerank 1.0,amazon.rerank-v1:0,Amazon,TEXT,TEXT,False,,ON_DEMAND,ACTIVE
+SDXL 1.0,stability.stable-diffusion-xl-v1:0,Stability AI,TEXT|IMAGE,IMAGE,,,PROVISIONED,LEGACY
+SDXL 1.0,stability.stable-diffusion-xl-v1,Stability AI,TEXT|IMAGE,IMAGE,,,ON_DEMAND,LEGACY
+SD3 Large 1.0,stability.sd3-large-v1:0,Stability AI,TEXT|IMAGE,IMAGE,,,ON_DEMAND,LEGACY
+Stable Diffusion 3.5 Large,stability.sd3-5-large-v1:0,Stability AI,TEXT|IMAGE,IMAGE,,,ON_DEMAND,ACTIVE
+Stable Image Core 1.0,stability.stable-image-core-v1:0,Stability AI,TEXT,IMAGE,,,ON_DEMAND,LEGACY
+Stable Image Core 1.0,stability.stable-image-core-v1:1,Stability AI,TEXT,IMAGE,,,ON_DEMAND,ACTIVE
+Stable Image Ultra 1.0,stability.stable-image-ultra-v1:0,Stability AI,TEXT,IMAGE,,,ON_DEMAND,LEGACY
+Stable Image Ultra 1.0,stability.stable-image-ultra-v1:1,Stability AI,TEXT,IMAGE,,,ON_DEMAND,ACTIVE
+Claude 3.5 Sonnet v2,anthropic.claude-3-5-sonnet-20241022-v2:0:18k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
+Claude 3.5 Sonnet v2,anthropic.claude-3-5-sonnet-20241022-v2:0:51k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
+Claude 3.5 Sonnet v2,anthropic.claude-3-5-sonnet-20241022-v2:0:200k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
+Claude 3.5 Sonnet v2,anthropic.claude-3-5-sonnet-20241022-v2:0,Anthropic,TEXT|IMAGE,TEXT,True,,ON_DEMAND,ACTIVE
+Claude 3.7 Sonnet,anthropic.claude-3-7-sonnet-20250219-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Claude 3.5 Haiku,anthropic.claude-3-5-haiku-20241022-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,ON_DEMAND,ACTIVE
+Claude Instant,anthropic.claude-instant-v1:2:100k,Anthropic,TEXT,TEXT,True,,PROVISIONED,LEGACY
+Claude Instant,anthropic.claude-instant-v1,Anthropic,TEXT,TEXT,True,,ON_DEMAND,LEGACY
+Claude,anthropic.claude-v2:0:18k,Anthropic,TEXT,TEXT,True,,PROVISIONED,LEGACY
+Claude,anthropic.claude-v2:0:100k,Anthropic,TEXT,TEXT,True,,PROVISIONED,LEGACY
+Claude,anthropic.claude-v2:1:18k,Anthropic,TEXT,TEXT,True,,PROVISIONED,LEGACY
+Claude,anthropic.claude-v2:1:200k,Anthropic,TEXT,TEXT,True,,PROVISIONED,LEGACY
+Claude,anthropic.claude-v2:1,Anthropic,TEXT,TEXT,True,,ON_DEMAND,LEGACY
+Claude,anthropic.claude-v2,Anthropic,TEXT,TEXT,True,,ON_DEMAND,LEGACY
+Claude 3 Sonnet,anthropic.claude-3-sonnet-20240229-v1:0:28k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,LEGACY
+Claude 3 Sonnet,anthropic.claude-3-sonnet-20240229-v1:0:200k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,LEGACY
+Claude 3 Sonnet,anthropic.claude-3-sonnet-20240229-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,ON_DEMAND,LEGACY
+Claude 3 Haiku,anthropic.claude-3-haiku-20240307-v1:0:48k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
+Claude 3 Haiku,anthropic.claude-3-haiku-20240307-v1:0:200k,Anthropic,TEXT|IMAGE,TEXT,True,FINE_TUNING|DISTILLATION,PROVISIONED,ACTIVE
+Claude 3 Haiku,anthropic.claude-3-haiku-20240307-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,ON_DEMAND,ACTIVE
+Claude 3 Opus,anthropic.claude-3-opus-20240229-v1:0:12k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
+Claude 3 Opus,anthropic.claude-3-opus-20240229-v1:0:28k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
+Claude 3 Opus,anthropic.claude-3-opus-20240229-v1:0:200k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
+Claude 3 Opus,anthropic.claude-3-opus-20240229-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,ON_DEMAND,ACTIVE
+Claude 3.5 Sonnet,anthropic.claude-3-5-sonnet-20240620-v1:0:18k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
+Claude 3.5 Sonnet,anthropic.claude-3-5-sonnet-20240620-v1:0:51k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
+Claude 3.5 Sonnet,anthropic.claude-3-5-sonnet-20240620-v1:0:200k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
+Claude 3.5 Sonnet,anthropic.claude-3-5-sonnet-20240620-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,ON_DEMAND|INFERENCE_PROFILE,ACTIVE
+Command,cohere.command-text-v14:7:4k,Cohere,TEXT,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
+Command,cohere.command-text-v14,Cohere,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Command R,cohere.command-r-v1:0,Cohere,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Command R+,cohere.command-r-plus-v1:0,Cohere,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Command Light,cohere.command-light-text-v14:7:4k,Cohere,TEXT,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
+Command Light,cohere.command-light-text-v14,Cohere,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Embed English,cohere.embed-english-v3:0:512,Cohere,TEXT,EMBEDDING,False,,PROVISIONED,ACTIVE
+Embed English,cohere.embed-english-v3,Cohere,TEXT,EMBEDDING,False,,ON_DEMAND,ACTIVE
+Embed Multilingual,cohere.embed-multilingual-v3:0:512,Cohere,TEXT,EMBEDDING,False,,PROVISIONED,ACTIVE
+Embed Multilingual,cohere.embed-multilingual-v3,Cohere,TEXT,EMBEDDING,False,,ON_DEMAND,ACTIVE
+Rerank 3.5,cohere.rerank-v3-5:0,Cohere,TEXT,TEXT,False,,ON_DEMAND,ACTIVE
+DeepSeek-R1,deepseek.r1-v1:0,DeepSeek,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Llama 3 8B Instruct,meta.llama3-8b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Llama 3 70B Instruct,meta.llama3-70b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Llama 3.1 8B Instruct,meta.llama3-1-8b-instruct-v1:0:128k,Meta,TEXT,TEXT,True,FINE_TUNING|DISTILLATION,PROVISIONED,ACTIVE
+Llama 3.1 8B Instruct,meta.llama3-1-8b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Llama 3.1 70B Instruct,meta.llama3-1-70b-instruct-v1:0:128k,Meta,TEXT,TEXT,True,FINE_TUNING|DISTILLATION,PROVISIONED,ACTIVE
+Llama 3.1 70B Instruct,meta.llama3-1-70b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Llama 3.1 405B Instruct,meta.llama3-1-405b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Llama 3.2 11B Instruct,meta.llama3-2-11b-instruct-v1:0:128k,Meta,TEXT|IMAGE,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
+Llama 3.2 11B Instruct,meta.llama3-2-11b-instruct-v1:0,Meta,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Llama 3.2 90B Instruct,meta.llama3-2-90b-instruct-v1:0:128k,Meta,TEXT|IMAGE,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
+Llama 3.2 90B Instruct,meta.llama3-2-90b-instruct-v1:0,Meta,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Llama 3.2 1B Instruct,meta.llama3-2-1b-instruct-v1:0:128k,Meta,TEXT,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
+Llama 3.2 1B Instruct,meta.llama3-2-1b-instruct-v1:0,Meta,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Llama 3.2 3B Instruct,meta.llama3-2-3b-instruct-v1:0:128k,Meta,TEXT,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
+Llama 3.2 3B Instruct,meta.llama3-2-3b-instruct-v1:0,Meta,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Llama 3.3 70B Instruct,meta.llama3-3-70b-instruct-v1:0,Meta,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Mistral 7B Instruct,mistral.mistral-7b-instruct-v0:2,Mistral AI,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Mixtral 8x7B Instruct,mistral.mixtral-8x7b-instruct-v0:1,Mistral AI,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Mistral Large (24.02),mistral.mistral-large-2402-v1:0,Mistral AI,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Mistral Large (24.07),mistral.mistral-large-2407-v1:0,Mistral AI,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Pixtral Large (25.02),mistral.pixtral-large-2502-v1:0,Mistral AI,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Ray v2,luma.ray-v2:0,Luma AI,TEXT,VIDEO,False,,ON_DEMAND,ACTIVE
