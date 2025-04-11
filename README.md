@@ -9,6 +9,7 @@ ParaLLM is a command-line tool and Python package for efficiently querying langu
 - **Structured JSON Output:** Get responses formatted to JSON schemas or Pydantic models
 - **Single-Query Mode:** Use `parallm single` for quick one-off queries with schema support
 - **High Performance:** Leverages Bodo for parallel execution of queries
+- **AWS Bedrock Support:** Query AWS Bedrock models with the same interface
 
 ## Installation
 
@@ -24,11 +25,11 @@ cd parallm
 pip install -e .
 ```
 
-You'll need to install Simon Willison's `llm` package and set up your API keys.
+You'll need to install Simon Willison's `llm` package and set up your API keys. For AWS Bedrock, ensure you have AWS credentials configured.
 
 ## Command-Line Usage
 
-### Batch Processing Multiple Prompts
+### Regular LLM Queries
 
 ```bash
 # Process prompts.csv with two different models
@@ -71,12 +72,16 @@ parallm single "Describe a nice dog" --schema '{
   },
   "required": ["name", "age", "breed", "personality_traits"]
 }'
+```
 
-# Using schema from a file
-parallm single "List the top 5 programming languages" --schema schemas/languages.json
+### AWS Bedrock Queries
 
-# Using a Pydantic model
-parallm single "Describe a car" --pydantic models.py:Car
+```bash
+# Single query with AWS Bedrock
+parallm aws single "What is the capital of France?" --model anthropic.claude-3-sonnet-20240229
+
+# Batch process with AWS Bedrock models
+parallm aws batch --prompts data/prompts.csv --models anthropic.claude-3-sonnet-20240229 amazon.titan-text-express-v1
 ```
 
 ## Python API Usage
@@ -93,6 +98,23 @@ print(response)  # Paris
 # Different model
 response = query_model("What is the capital of France?", model_given="claude-3-sonnet-20240229")
 print(response)
+```
+
+### AWS Bedrock Queries
+
+```python
+from parallm import bedrock_query_model
+
+# Simple text query with AWS Bedrock
+response = bedrock_query_model("What is the capital of France?", model_id="anthropic.claude-3-sonnet-20240229")
+print(response)
+
+# Batch processing with AWS Bedrock
+from parallm import bedrock_query_model_all
+import pandas as pd
+
+df = bedrock_query_model_all("data/prompts.csv", ["anthropic.claude-3-sonnet-20240229", "amazon.titan-text-express-v1"])
+print(df)
 ```
 
 ### Structured JSON Output
@@ -113,9 +135,6 @@ schema = {
 result = query_model_json("Describe a nice dog", schema=schema)
 print(result)
 # Output: {'name': 'Buddy', 'age': 3, 'is_friendly': True}
-
-# Access fields directly
-print(f"The dog's name is {result['name']} and it is {result['age']} years old")
 ```
 
 ### Using Pydantic Models
@@ -194,6 +213,7 @@ How does blockchain work?
 - **llm:** Simon Willison's LLM interface library
 - **python-dotenv:** Environment variable management
 - **pydantic:** Data validation for structured output
+- **boto3:** AWS SDK for Python (required for AWS Bedrock)
 
 ## Author
 
