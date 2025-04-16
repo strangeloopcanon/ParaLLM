@@ -119,6 +119,21 @@ parallm gemini "Describe a nice dog" --schema '{
 }'
 ```
 
+### Batch Repeating Queries (CSV, Multiple Models)
+
+#### Command-Line Usage
+
+```bash
+# Default (OpenAI/llm): Repeat each (prompt, model) pair 10 times
+parallm --prompts data/prompts.csv --models gpt-4o-mini claude-3-sonnet-20240229 --repeat 10
+
+# AWS Bedrock: Repeat each (prompt, model) pair 5 times
+parallm aws batch --prompts data/prompts.csv --models anthropic.claude-3-sonnet-20240229 --repeat 5
+
+# Gemini: Repeat each (prompt, model) pair 7 times
+parallm gemini --prompts data/prompts.csv --models gemini-2.0-flash --repeat 7
+```
+
 ## Python API Usage
 
 ### Basic Queries
@@ -293,6 +308,26 @@ print(df)
 
 # Gemini
 df = gemini_query_model_repeat("What is the capital of France?", model_id="gemini-2.0-flash", repeat=7)
+print(df)
+```
+
+### Batch Repeating Queries (CSV, Multiple Models)
+
+#### Python API Usage
+
+```python
+from parallm import query_model_all_repeat, bedrock_query_model_all_repeat, gemini_query_model_all_repeat
+
+# Default (OpenAI/llm)
+df = query_model_all_repeat("data/prompts.csv", ["gpt-4o-mini", "claude-3-sonnet-20240229"], repeat=10)
+print(df)
+
+# AWS Bedrock
+df = bedrock_query_model_all_repeat("data/prompts.csv", ["anthropic.claude-3-sonnet-20240229"], repeat=5)
+print(df)
+
+# Gemini
+df = gemini_query_model_all_repeat("data/prompts.csv", ["gemini-2.0-flash"], repeat=7)
 print(df)
 ```
 

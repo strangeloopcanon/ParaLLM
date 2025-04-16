@@ -269,21 +269,29 @@ def handle_batch_query(args, mode="default"):
     else:
         query_module = model_query
     
-    if schema is not None:
-        print("Schema provided. Running queries sequentially (non-parallel)...")
-        t_start = time.time()
-        try:
-            prompts_df = pd.read_csv(args.prompts)
-            prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
+    # Use the new repeat logic for batch mode
+    if repeat > 1:
+        if mode == "aws":
+            result_df = query_module.query_model_all_repeat(args.prompts, args.models, repeat, schema)
+        elif mode == "gemini":
+            result_df = query_module.query_model_all_repeat(args.prompts, args.models, repeat, schema)
+        else:
+            result_df = query_module.query_model_all_repeat(args.prompts, args.models, repeat, schema)
+    else:
+        if schema is not None:
+            print("Schema provided. Running queries sequentially (non-parallel)...")
+            t_start = time.time()
+            try:
+                prompts_df = pd.read_csv(args.prompts)
+                prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
 
-            models = pd.Series(args.models).str.strip().str.lower().tolist()
-            models_df = pd.DataFrame({"model": models})
-            combined_df = prompts_df.merge(models_df, how='cross')
+                models = pd.Series(args.models).str.strip().str.lower().tolist()
+                models_df = pd.DataFrame({"model": models})
+                combined_df = prompts_df.merge(models_df, how='cross')
 
-            # Repeat each (prompt, model) pair 'repeat' times
-            repeated_rows = []
-            for _, row in combined_df.iterrows():
-                for r in range(repeat):
+                # Repeat each (prompt, model) pair 'repeat' times
+                repeated_rows = []
+                for _, row in combined_df.iterrows():
                     try:
                         response = query_module.query_model(row["prompt"], row["model"], schema)
                     except Exception as e:
@@ -291,41 +299,39 @@ def handle_batch_query(args, mode="default"):
                     repeated_rows.append({
                         "prompt": row["prompt"],
                         "model": row["model"],
-                        "repeat_index": r+1,
+                        "repeat_index": 1,
                         "response": response
                     })
-            result_df = pd.DataFrame(repeated_rows)
-            print(f"Sequential processing time: {time.time() - t_start:.2f} seconds")
+                result_df = pd.DataFrame(repeated_rows)
+                print(f"Sequential processing time: {time.time() - t_start:.2f} seconds")
 
-        except Exception as e:
-            print(f"\nError during sequential processing: {e}")
-            sys.exit(1)
-    else:
-        print("No schema provided. Running queries in parallel using Bodo...")
-        try:
-            # For parallel, repeat the prompts in the input DataFrame
-            prompts_df = pd.read_csv(args.prompts)
-            prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
-            models = pd.Series(args.models).str.strip().str.lower().tolist()
-            models_df = pd.DataFrame({"model": models})
-            combined_df = prompts_df.merge(models_df, how='cross')
-            repeated_df = pd.DataFrame(
-                [
-                    {"prompt": row["prompt"], "model": row["model"], "repeat_index": r+1}
-                    for _, row in combined_df.iterrows() for r in range(repeat)
-                ]
-            )
-            # Now run query_model for each row
-            def run_query(row):
-                try:
-                    return query_module.query_model(row["prompt"], row["model"])
-                except Exception as e:
-                    return f"Error: {e}"
-            repeated_df["response"] = repeated_df.apply(run_query, axis=1)
-            result_df = repeated_df
-        except Exception as e:
-            print(f"\nError during parallel processing: {e}")
-            sys.exit(1)
+            except Exception as e:
+                print(f"\nError during sequential processing: {e}")
+                sys.exit(1)
+        else:
+            print("No schema provided. Running queries in parallel using Bodo...")
+            try:
+                prompts_df = pd.read_csv(args.prompts)
+                prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
+                models = pd.Series(args.models).str.strip().str.lower().tolist()
+                models_df = pd.DataFrame({"model": models})
+                combined_df = prompts_df.merge(models_df, how='cross')
+                repeated_df = pd.DataFrame(
+                    [
+                        {"prompt": row["prompt"], "model": row["model"], "repeat_index": 1}
+                        for _, row in combined_df.iterrows()
+                    ]
+                )
+                def run_query(row):
+                    try:
+                        return query_module.query_model(row["prompt"], row["model"])
+                    except Exception as e:
+                        return f"Error: {e}"
+                repeated_df["response"] = repeated_df.apply(run_query, axis=1)
+                result_df = repeated_df
+            except Exception as e:
+                print(f"\nError during parallel processing: {e}")
+                sys.exit(1)
 
     print(f"\nReadable table for humans: \n{result_df}\n")
     print(f"\nReadable table for machines (CSV to stdout): \n")

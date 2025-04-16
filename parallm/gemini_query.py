@@ -132,3 +132,24 @@ def query_model_repeat(prompt, model_id="gemini-2.0-flash", repeat=1, schema=Non
         return query_model(row["prompt"], row["model"], schema)
     df["response"] = df.apply(run_query, axis=1)
     return df[["repeat_index", "response"]] 
+
+@bodo.jit
+def query_model_all_repeat(file_path, models, repeat=1, schema=None):
+    """
+    Reads the prompts from `file_path` and a list of model IDs,
+    creates a Cartesian product of prompts, models, and repeat_index, and queries each combination.
+    Returns a DataFrame with columns: prompt, model, repeat_index, response
+    """
+    prompts_df = pd.read_csv(file_path)
+    prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
+    models = pd.Series(models).str.strip().str.lower().tolist()
+    models_df = pd.DataFrame({"model": models})
+    combined_df = prompts_df.merge(models_df, how='cross')
+    repeated_df = pd.DataFrame([
+        {"prompt": row["prompt"], "model": row["model"], "repeat_index": r+1}
+        for _, row in combined_df.iterrows() for r in range(repeat)
+    ])
+    def run_query(row):
+        return query_model(row["prompt"], row["model"], schema)
+    repeated_df["response"] = repeated_df.apply(run_query, axis=1)
+    return repeated_df[["prompt", "model", "repeat_index", "response"]] 
