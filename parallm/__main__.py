@@ -21,11 +21,14 @@ if __name__ == "__main__":
             sys.argv.pop(1)  # Remove the 'gemini' argument
             # Check if we have a prompt argument (single mode)
             args = [arg for arg in sys.argv[1:] if not arg.startswith('--')]
-            if len(args) > 0 and not any(arg.startswith('--') for arg in sys.argv[1:]):
-                # Insert 'single' for single query mode
-                sys.argv.insert(1, "single")
-            cli(mode="gemini")
-            sys.exit(0)
+            if len(args) > 0:
+                # We're in single query mode
+                cli(mode="gemini")
+                sys.exit(0)
+            else:
+                # We're in batch mode
+                cli(mode="gemini")
+                sys.exit(0)
             
     # If no command specified, check if we're in single mode
     # (by looking for a non-flag argument after removing command if present)

@@ -96,6 +96,18 @@ parallm gemini --prompts data/prompts.csv --models gemini-2.0-flash
 
 # Using a Pydantic model for structured output
 parallm gemini "List a few popular cookie recipes" --pydantic models.py:Recipe
+
+# Using a JSON schema for structured output
+parallm gemini "Describe a nice dog" --schema '{
+  "type": "object",
+  "properties": {
+    "name": {"type": "string"},
+    "age": {"type": "integer"},
+    "breed": {"type": "string"},
+    "personality_traits": {"type": "array", "items": {"type": "string"}}
+  },
+  "required": ["name", "age", "breed", "personality_traits"]
+}'
 ```
 
 ## Python API Usage

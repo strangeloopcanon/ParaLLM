@@ -94,32 +94,10 @@ def cli(mode=None):
             parser.print_help()
             sys.exit(1)
     elif mode == "gemini":
-        # Check if we're in single mode (has a prompt argument)
-        args = [arg for arg in sys.argv[1:] if not arg.startswith('--')]
-        if len(args) > 0 and not any(arg.startswith('--') for arg in sys.argv[1:]):
-            # Single query mode
-            parser = argparse.ArgumentParser(
-                description="Query a Google Gemini model with a single prompt."
-            )
-            parser.add_argument(
-                "prompt", type=str,
-                help="The prompt to send to the Google Gemini model."
-            )
-            parser.add_argument(
-                "--model", type=str, default="gemini-2.0-flash",
-                help="The Google Gemini model ID to query (default: gemini-2.0-flash)."
-            )
-            parser.add_argument(
-                "--schema", type=str,
-                help="JSON schema file path or JSON string for structured output."
-            )
-            parser.add_argument(
-                "--pydantic", type=str,
-                help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
-            )
-            args = parser.parse_args()
-            handle_single_query(args, mode="gemini")
-        else:
+        # Check if we're in batch mode (has --prompts argument)
+        is_batch = any(arg.startswith('--prompts') for arg in sys.argv)
+        
+        if is_batch:
             # Batch mode
             parser = argparse.ArgumentParser(
                 description="Query multiple Google Gemini models with prompts from a CSV file."
@@ -142,6 +120,29 @@ def cli(mode=None):
             )
             args = parser.parse_args()
             handle_batch_query(args, mode="gemini")
+        else:
+            # Single query mode
+            parser = argparse.ArgumentParser(
+                description="Query a Google Gemini model with a single prompt."
+            )
+            parser.add_argument(
+                "prompt", type=str,
+                help="The prompt to send to the Google Gemini model."
+            )
+            parser.add_argument(
+                "--model", type=str, default="gemini-2.0-flash",
+                help="The Google Gemini model ID to query (default: gemini-2.0-flash)."
+            )
+            parser.add_argument(
+                "--schema", type=str,
+                help="JSON schema file path or JSON string for structured output."
+            )
+            parser.add_argument(
+                "--pydantic", type=str,
+                help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
+            )
+            args = parser.parse_args()
+            handle_single_query(args, mode="gemini")
     else:  # batch mode
         parser = argparse.ArgumentParser(
             description="Query multiple models with prompts from a CSV file."
