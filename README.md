@@ -62,6 +62,9 @@ parallm single "What is the capital of France?"
 # Specify a different model
 parallm single "What is the capital of France?" --model claude-3-opus-20240229
 
+# Repeat the same query multiple times
+parallm single "What is the capital of France?" --repeat 100
+
 # Get structured JSON response using inline schema
 parallm single "Describe a nice dog" --schema '{
   "type": "object",
@@ -81,6 +84,9 @@ parallm single "Describe a nice dog" --schema '{
 # Single query with AWS Bedrock
 parallm aws single "What is the capital of France?" --model anthropic.claude-3-sonnet-20240229
 
+# Repeat a query multiple times with AWS Bedrock
+parallm aws single "What is the capital of France?" --model anthropic.claude-3-sonnet-20240229 --repeat 100
+
 # Batch process with AWS Bedrock models
 parallm aws batch --prompts data/prompts.csv --models anthropic.claude-3-sonnet-20240229 amazon.titan-text-express-v1
 ```
@@ -90,6 +96,9 @@ parallm aws batch --prompts data/prompts.csv --models anthropic.claude-3-sonnet-
 ```bash
 # Single query with Gemini
 parallm gemini "What is the capital of France?" --model gemini-2.0-flash
+
+# Repeat a query multiple times with Gemini
+parallm gemini "What is the capital of France?" --model gemini-2.0-flash --repeat 100
 
 # Batch process with Gemini
 parallm gemini --prompts data/prompts.csv --models gemini-2.0-flash
@@ -267,6 +276,24 @@ for _, row in df.iterrows():
 
 # Save results
 df.to_csv("structured_results.csv", index=False)
+```
+
+### Repeating a Query N Times (Easy Top-Level Import)
+
+```python
+from parallm import query_model_repeat, bedrock_query_model_repeat, gemini_query_model_repeat
+
+# Default (OpenAI/llm)
+df = query_model_repeat("What is the capital of France?", repeat=10)
+print(df)
+
+# AWS Bedrock
+df = bedrock_query_model_repeat("What is the capital of France?", model_id="anthropic.claude-3-sonnet-20240229", repeat=5)
+print(df)
+
+# Gemini
+df = gemini_query_model_repeat("What is the capital of France?", model_id="gemini-2.0-flash", repeat=7)
+print(df)
 ```
 
 ## CSV Format

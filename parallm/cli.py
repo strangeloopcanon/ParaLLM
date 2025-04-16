@@ -38,6 +38,10 @@ def cli(mode=None):
             "--pydantic", type=str,
             help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
         )
+        parser.add_argument(
+            "--repeat", type=int, default=1,
+            help="Number of times to repeat the query (default: 1)."
+        )
         args = parser.parse_args()
         handle_single_query(args, mode="default")
     elif mode == "aws":
@@ -64,6 +68,10 @@ def cli(mode=None):
             "--pydantic", type=str,
             help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
         )
+        single_parser.add_argument(
+            "--repeat", type=int, default=1,
+            help="Number of times to repeat the query (default: 1)."
+        )
         
         # AWS Batch mode
         batch_parser = subparsers.add_parser("batch", help="Process batch prompts with AWS Bedrock")
@@ -82,6 +90,10 @@ def cli(mode=None):
         batch_parser.add_argument(
             "--pydantic", type=str,
             help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
+        )
+        batch_parser.add_argument(
+            "--repeat", type=int, default=1,
+            help="Number of times to repeat each query (default: 1)."
         )
         
         args = parser.parse_args()
@@ -118,6 +130,10 @@ def cli(mode=None):
                 "--pydantic", type=str,
                 help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
             )
+            parser.add_argument(
+                "--repeat", type=int, default=1,
+                help="Number of times to repeat each query (default: 1)."
+            )
             args = parser.parse_args()
             handle_batch_query(args, mode="gemini")
         else:
@@ -141,6 +157,10 @@ def cli(mode=None):
                 "--pydantic", type=str,
                 help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
             )
+            parser.add_argument(
+                "--repeat", type=int, default=1,
+                help="Number of times to repeat the query (default: 1)."
+            )
             args = parser.parse_args()
             handle_single_query(args, mode="gemini")
     else:  # batch mode
@@ -162,6 +182,10 @@ def cli(mode=None):
         parser.add_argument(
             "--pydantic", type=str,
             help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
+        )
+        parser.add_argument(
+            "--repeat", type=int, default=1,
+            help="Number of times to repeat each query (default: 1)."
         )
         args = parser.parse_args()
         handle_batch_query(args)
@@ -201,19 +225,42 @@ def handle_single_query(args, mode="default"):
             query_module = gemini_query
         else:
             query_module = model_query
-            
-        if schema is None:
-            result = query_module.query_model(args.prompt, args.model)
-            print(result)
+        
+        # Parallel repeat for all providers
+        if args.repeat > 1:
+            if mode == "gemini":
+                df = query_module.query_model_repeat(args.prompt, args.model, args.repeat, schema)
+            elif mode == "aws":
+                df = query_module.query_model_repeat(args.prompt, args.model, args.repeat, schema)
+            else:
+                df = query_module.query_model_repeat(args.prompt, args.model, args.repeat, schema)
+            for _, row in df.iterrows():
+                print(f"Response {row['repeat_index']}/{args.repeat}:")
+                if schema is None:
+                    print(row['response'])
+                else:
+                    try:
+                        if isinstance(row['response'], dict):
+                            print(json.dumps(row['response'], indent=2))
+                        else:
+                            print(json.dumps(json.loads(row['response']), indent=2))
+                    except Exception:
+                        print(row['response'])
+                print("---")
         else:
-            result = query_module.query_model_json(args.prompt, args.model, schema)
-            print(json.dumps(result, indent=2))
+            if schema is None:
+                result = query_module.query_model(args.prompt, args.model)
+                print(result)
+            else:
+                result = query_module.query_model_json(args.prompt, args.model, schema)
+                print(json.dumps(result, indent=2))
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
 
 def handle_batch_query(args, mode="default"):
     schema = load_schema(args.schema, args.pydantic)
+    repeat = getattr(args, 'repeat', 1)
     
     if mode == "aws":
         query_module = bedrock_query
@@ -233,11 +280,21 @@ def handle_batch_query(args, mode="default"):
             models_df = pd.DataFrame({"model": models})
             combined_df = prompts_df.merge(models_df, how='cross')
 
-            combined_df["response"] = combined_df.apply(
-                lambda row: query_module.query_model(row["prompt"], row["model"], schema),
-                axis=1
-            )
-            result_df = combined_df
+            # Repeat each (prompt, model) pair 'repeat' times
+            repeated_rows = []
+            for _, row in combined_df.iterrows():
+                for r in range(repeat):
+                    try:
+                        response = query_module.query_model(row["prompt"], row["model"], schema)
+                    except Exception as e:
+                        response = f"Error: {e}"
+                    repeated_rows.append({
+                        "prompt": row["prompt"],
+                        "model": row["model"],
+                        "repeat_index": r+1,
+                        "response": response
+                    })
+            result_df = pd.DataFrame(repeated_rows)
             print(f"Sequential processing time: {time.time() - t_start:.2f} seconds")
 
         except Exception as e:
@@ -246,7 +303,26 @@ def handle_batch_query(args, mode="default"):
     else:
         print("No schema provided. Running queries in parallel using Bodo...")
         try:
-            result_df = query_module.query_model_all(args.prompts, args.models, schema)
+            # For parallel, repeat the prompts in the input DataFrame
+            prompts_df = pd.read_csv(args.prompts)
+            prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
+            models = pd.Series(args.models).str.strip().str.lower().tolist()
+            models_df = pd.DataFrame({"model": models})
+            combined_df = prompts_df.merge(models_df, how='cross')
+            repeated_df = pd.DataFrame(
+                [
+                    {"prompt": row["prompt"], "model": row["model"], "repeat_index": r+1}
+                    for _, row in combined_df.iterrows() for r in range(repeat)
+                ]
+            )
+            # Now run query_model for each row
+            def run_query(row):
+                try:
+                    return query_module.query_model(row["prompt"], row["model"])
+                except Exception as e:
+                    return f"Error: {e}"
+            repeated_df["response"] = repeated_df.apply(run_query, axis=1)
+            result_df = repeated_df
         except Exception as e:
             print(f"\nError during parallel processing: {e}")
             sys.exit(1)

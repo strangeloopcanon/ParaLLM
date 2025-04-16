@@ -168,3 +168,19 @@ def query_model_all(file_path, models, schema=None):
 
     print("Processing time:", time.time() - t0)
     return combined_df 
+
+@bodo.jit
+def query_model_repeat(prompt, model_id="anthropic.claude-3-sonnet-20240229", repeat=1, schema=None):
+    """
+    Runs the same prompt against the same model N times in parallel using Bodo.
+    Returns a DataFrame with columns: repeat_index, response
+    """
+    df = pd.DataFrame({
+        "repeat_index": range(1, repeat + 1),
+        "prompt": [prompt] * repeat,
+        "model": [model_id] * repeat
+    })
+    def run_query(row):
+        return query_model(row["prompt"], row["model"], schema)
+    df["response"] = df.apply(run_query, axis=1)
+    return df[["repeat_index", "response"]] 
