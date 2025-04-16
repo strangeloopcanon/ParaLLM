@@ -7,7 +7,7 @@ license-files = []  # override the default behavior
 
 [project]
 name = "parallm"
-version = "0.1.13"
+version = "0.1.14"
 description = "CLI tool for querying multiple models with prompts from a CSV with schema support"
 authors = [
   { name = "Rohit Krishnan", email = "rohit.krishnan@gmail.com" }
@@ -17,8 +17,8 @@ readme = "README.md"
 requires-python = ">=3.8"
 
 dependencies = [
-  "bodo==2025.3.3",
-  "llm==0.23",
+  "bodo>=2025.3.3",
+  "llm>=0.23",
   "pandas==2.2.3",
   "python-dotenv==1.1.0",
   "pydantic>=2.0.0"

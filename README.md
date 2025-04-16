@@ -10,6 +10,7 @@ ParaLLM is a command-line tool and Python package for efficiently querying langu
 - **Single-Query Mode:** Use `parallm single` for quick one-off queries with schema support
 - **High Performance:** Leverages Bodo for parallel execution of queries
 - **AWS Bedrock Support:** Query AWS Bedrock models with the same interface
+- **Google Gemini Support:** Query Google Gemini models with native schema support
 
 ## Installation
 
@@ -25,7 +26,7 @@ cd parallm
 pip install -e .
 ```
 
-You'll need to install Simon Willison's `llm` package and set up your API keys. For AWS Bedrock, ensure you have AWS credentials configured.
+You'll need to install Simon Willison's `llm` package and set up your API keys. For AWS Bedrock, ensure you have AWS credentials configured. For Gemini, set the `GEMINI_API_KEY` environment variable.
 
 ## Command-Line Usage
 
@@ -84,6 +85,19 @@ parallm aws single "What is the capital of France?" --model anthropic.claude-3-s
 parallm aws batch --prompts data/prompts.csv --models anthropic.claude-3-sonnet-20240229 amazon.titan-text-express-v1
 ```
 
+### Google Gemini Queries
+
+```bash
+# Single query with Gemini
+parallm gemini "What is the capital of France?" --model gemini-2.0-flash
+
+# Batch process with Gemini
+parallm gemini --prompts data/prompts.csv --models gemini-2.0-flash
+
+# Using a Pydantic model for structured output
+parallm gemini "List a few popular cookie recipes" --pydantic models.py:Recipe
+```
+
 ## Python API Usage
 
 ### Basic Queries
@@ -114,6 +128,54 @@ from parallm import bedrock_query_model_all
 import pandas as pd
 
 df = bedrock_query_model_all("data/prompts.csv", ["anthropic.claude-3-sonnet-20240229", "amazon.titan-text-express-v1"])
+print(df)
+```
+
+### Google Gemini Queries
+
+```python
+from parallm import gemini_query
+from pydantic import BaseModel
+
+# Simple text query
+response = gemini_query.query_model("What is the capital of France?")
+print(response)
+
+# Using a Pydantic model
+class Recipe(BaseModel):
+    recipe_name: str
+    ingredients: list[str]
+
+# Get parsed Pydantic model directly
+recipes = gemini_query.query_model(
+    prompt="List a few popular cookie recipes. Be sure to include the amounts of ingredients.",
+    model_id="gemini-2.0-flash",
+    schema=Recipe
+)
+print(recipes.recipe_name)
+print(recipes.ingredients)
+
+# Using JSON schema
+json_schema = {
+    "type": "object",
+    "properties": {
+        "recipe_name": {"type": "string"},
+        "ingredients": {"type": "array", "items": {"type": "string"}}
+    }
+}
+
+# Get JSON string
+json_response = gemini_query.query_model(
+    prompt="List a few popular cookie recipes. Be sure to include the amounts of ingredients.",
+    model_id="gemini-2.0-flash",
+    schema=json_schema
+)
+
+# Batch processing
+df = gemini_query.query_model_all(
+    file_path="data/prompts.csv",
+    models=["gemini-2.0-flash"]
+)
 print(df)
 ```
 
@@ -214,6 +276,7 @@ How does blockchain work?
 - **python-dotenv:** Environment variable management
 - **pydantic:** Data validation for structured output
 - **boto3:** AWS SDK for Python (required for AWS Bedrock)
+- **google-generativeai:** Google's Gemini API client (required for Gemini)
 
 ## Author
 
