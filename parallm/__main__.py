@@ -6,34 +6,17 @@ This allows running the package with 'python -m parallm <args>'
 import sys
 from parallm.cli import cli
 
-if __name__ == "__main__":
-    # Check if the first argument is a command
+def main():
     if len(sys.argv) > 1:
-        if sys.argv[1] == "single":
-            sys.argv.pop(1)  # Remove the 'single' argument
-            cli(mode="single")
-            sys.exit(0)
-        elif sys.argv[1] == "aws":
-            sys.argv.pop(1)  # Remove the 'aws' argument
-            cli(mode="aws")
-            sys.exit(0)
+        if sys.argv[1] == "aws":
+            cli("aws")
         elif sys.argv[1] == "gemini":
-            sys.argv.pop(1)  # Remove the 'gemini' argument
-            # Check if we have a prompt argument (single mode)
-            args = [arg for arg in sys.argv[1:] if not arg.startswith('--')]
-            if len(args) > 0:
-                # We're in single query mode
-                cli(mode="gemini")
-                sys.exit(0)
-            else:
-                # We're in batch mode
-                cli(mode="gemini")
-                sys.exit(0)
-            
-    # If no command specified, check if we're in single mode
-    # (by looking for a non-flag argument after removing command if present)
-    args = [arg for arg in sys.argv[1:] if not arg.startswith('--')]
-    if args and not any(arg.startswith('--') for arg in sys.argv[1:]):
-        cli(mode="single")
+            cli("gemini")
+        else:
+            # If the first argument is not a known mode, treat it as a prompt
+            cli()
     else:
-        cli(mode="batch")
+        cli()
+
+if __name__ == "__main__":
+    main()

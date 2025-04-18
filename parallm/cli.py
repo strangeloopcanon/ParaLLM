@@ -4,191 +4,71 @@ import argparse
 import json
 import sys
 import time
+import os
 from parallm import model_query
 from parallm import bedrock_query
 from parallm import gemini_query
 
 def cli(mode=None):
-    # If mode is not specified, try to detect it
-    if mode is None:
-        # Check if we have any non-flag arguments (potential prompt)
-        args = [arg for arg in sys.argv[1:] if not arg.startswith('--')]
-        if args and not any(arg.startswith('--') for arg in sys.argv[1:]):
-            mode = "single"
-        else:
-            mode = "batch"
-
-    if mode == "single":
-        parser = argparse.ArgumentParser(
-            description="Query a model with a single prompt."
-        )
-        parser.add_argument(
-            "prompt", type=str,
-            help="The prompt to send to the model."
-        )
-        parser.add_argument(
-            "--model", type=str, default="gpt-4o-mini",
-            help="The model to query (default: gpt-4o-mini)."
-        )
-        parser.add_argument(
-            "--schema", type=str,
-            help="JSON schema file path or JSON string for structured output."
-        )
-        parser.add_argument(
-            "--pydantic", type=str,
-            help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
-        )
-        parser.add_argument(
-            "--repeat", type=int, default=1,
-            help="Number of times to repeat the query (default: 1)."
-        )
-        args = parser.parse_args()
-        handle_single_query(args, mode="default")
-    elif mode == "aws":
-        parser = argparse.ArgumentParser(
-            description="Query an AWS Bedrock model with a single prompt or in batch mode."
-        )
-        subparsers = parser.add_subparsers(dest="command", help="Command to run")
+    parser = argparse.ArgumentParser(description='Parallel LLM Query Tool')
+    
+    if mode == "aws":
+        # AWS Bedrock mode
+        parser.add_argument('--prompts', nargs='+', required=True, help='List of prompts to query')
+        parser.add_argument('--models', nargs='+', default=['anthropic.claude-3-sonnet-20240229-v1:0'],
+                          help='List of model IDs to use')
+        parser.add_argument('--schema', help='JSON schema file for structured output')
+        parser.add_argument('--pydantic', help='Pydantic model file for structured output')
+        parser.add_argument('--repeat', type=int, default=1, help='Number of times to repeat each query')
         
-        # AWS Single mode
-        single_parser = subparsers.add_parser("single", help="Send a single prompt to AWS Bedrock")
-        single_parser.add_argument(
-            "prompt", type=str,
-            help="The prompt to send to the AWS Bedrock model."
-        )
-        single_parser.add_argument(
-            "--model", type=str, default="anthropic.claude-3-sonnet-20240229",
-            help="The AWS Bedrock model ID to query (default: anthropic.claude-3-sonnet-20240229)."
-        )
-        single_parser.add_argument(
-            "--schema", type=str,
-            help="JSON schema file path or JSON string for structured output."
-        )
-        single_parser.add_argument(
-            "--pydantic", type=str,
-            help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
-        )
-        single_parser.add_argument(
-            "--repeat", type=int, default=1,
-            help="Number of times to repeat the query (default: 1)."
-        )
-        
-        # AWS Batch mode
-        batch_parser = subparsers.add_parser("batch", help="Process batch prompts with AWS Bedrock")
-        batch_parser.add_argument(
-            "--prompts", type=str, required=True,
-            help="Path to the prompts CSV file."
-        )
-        batch_parser.add_argument(
-            "--models", type=str, nargs='+', required=True,
-            help="List of AWS Bedrock model IDs to query (space separated)."
-        )
-        batch_parser.add_argument(
-            "--schema", type=str,
-            help="JSON schema file path or JSON string for structured output."
-        )
-        batch_parser.add_argument(
-            "--pydantic", type=str,
-            help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
-        )
-        batch_parser.add_argument(
-            "--repeat", type=int, default=1,
-            help="Number of times to repeat each query (default: 1)."
-        )
-        
-        args = parser.parse_args()
-        
-        if args.command == "single":
-            handle_single_query(args, mode="aws")
-        elif args.command == "batch":
-            handle_batch_query(args, mode="aws")
-        else:
-            parser.print_help()
-            sys.exit(1)
     elif mode == "gemini":
-        # Check if we're in batch mode (has --prompts argument)
-        is_batch = any(arg.startswith('--prompts') for arg in sys.argv)
+        # Gemini mode
+        parser.add_argument('--prompts', nargs='+', required=True, help='List of prompts to query')
+        parser.add_argument('--models', nargs='+', default=['gemini-pro'],
+                          help='List of model IDs to use')
+        parser.add_argument('--schema', help='JSON schema file for structured output')
+        parser.add_argument('--pydantic', help='Pydantic model file for structured output')
+        parser.add_argument('--repeat', type=int, default=1, help='Number of times to repeat each query')
         
-        if is_batch:
-            # Batch mode
-            parser = argparse.ArgumentParser(
-                description="Query multiple Google Gemini models with prompts from a CSV file."
-            )
-            parser.add_argument(
-                "--prompts", type=str, required=True,
-                help="Path to the prompts CSV file."
-            )
-            parser.add_argument(
-                "--models", type=str, nargs='+', required=True,
-                help="List of Google Gemini model IDs to query (space separated)."
-            )
-            parser.add_argument(
-                "--schema", type=str,
-                help="JSON schema file path or JSON string for structured output."
-            )
-            parser.add_argument(
-                "--pydantic", type=str,
-                help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
-            )
-            parser.add_argument(
-                "--repeat", type=int, default=1,
-                help="Number of times to repeat each query (default: 1)."
-            )
-            args = parser.parse_args()
-            handle_batch_query(args, mode="gemini")
+    else:
+        # Default mode (single/batch)
+        parser.add_argument('--prompts', nargs='+', required=True, help='List of prompts to query')
+        parser.add_argument('--models', nargs='+', default=['gpt-4'],
+                          help='List of model IDs to use')
+        parser.add_argument('--schema', help='JSON schema file for structured output')
+        parser.add_argument('--pydantic', help='Pydantic model file for structured output')
+        parser.add_argument('--repeat', type=int, default=1, help='Number of times to repeat each query')
+    
+    # Remove the mode argument from sys.argv if it exists
+    if mode and len(sys.argv) > 1 and sys.argv[1] == mode:
+        sys.argv.pop(1)
+    
+    args = parser.parse_args()
+    
+    if mode == "aws":
+        from parallm.aws_query import query_aws_bedrock
+        query_aws_bedrock(args.prompts, args.models, args.schema, args.pydantic, args.repeat)
+    elif mode == "gemini":
+        from parallm.gemini_query import query_model_repeat, query_model_all_repeat
+        # For single prompt, use query_model_repeat
+        if len(args.prompts) == 1:
+            result = query_model_repeat(args.prompts[0], args.models[0], args.repeat, args.schema)
         else:
-            # Single query mode
-            parser = argparse.ArgumentParser(
-                description="Query a Google Gemini model with a single prompt."
-            )
-            parser.add_argument(
-                "prompt", type=str,
-                help="The prompt to send to the Google Gemini model."
-            )
-            parser.add_argument(
-                "--model", type=str, default="gemini-2.0-flash",
-                help="The Google Gemini model ID to query (default: gemini-2.0-flash)."
-            )
-            parser.add_argument(
-                "--schema", type=str,
-                help="JSON schema file path or JSON string for structured output."
-            )
-            parser.add_argument(
-                "--pydantic", type=str,
-                help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
-            )
-            parser.add_argument(
-                "--repeat", type=int, default=1,
-                help="Number of times to repeat the query (default: 1)."
-            )
-            args = parser.parse_args()
-            handle_single_query(args, mode="gemini")
-    else:  # batch mode
-        parser = argparse.ArgumentParser(
-            description="Query multiple models with prompts from a CSV file."
-        )
-        parser.add_argument(
-            "--prompts", type=str, required=True,
-            help="Path to the prompts CSV file."
-        )
-        parser.add_argument(
-            "--models", type=str, nargs='+', required=True,
-            help="List of model names to query (space separated)."
-        )
-        parser.add_argument(
-            "--schema", type=str,
-            help="JSON schema file path or JSON string for structured output."
-        )
-        parser.add_argument(
-            "--pydantic", type=str,
-            help="Python file:class specification for Pydantic model (e.g., 'models.py:Dog')."
-        )
-        parser.add_argument(
-            "--repeat", type=int, default=1,
-            help="Number of times to repeat each query (default: 1)."
-        )
-        args = parser.parse_args()
-        handle_batch_query(args)
+            # For multiple prompts, create a temporary CSV file
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+                f.write("prompt\n")
+                for prompt in args.prompts:
+                    f.write(f"{prompt}\n")
+                temp_file = f.name
+            try:
+                result = query_model_all_repeat(temp_file, args.models, args.repeat, args.schema)
+            finally:
+                os.unlink(temp_file)
+        print(result)
+    else:
+        from parallm.query import query_llm
+        query_llm(args.prompts, args.models, args.schema, args.pydantic, args.repeat)
 
 def load_schema(schema_arg, pydantic_arg):
     """Helper function to load schema from either JSON or Pydantic"""
