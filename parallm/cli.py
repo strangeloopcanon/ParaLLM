@@ -14,30 +14,30 @@ def cli(mode=None):
     
     if mode == "aws":
         # AWS Bedrock mode
-        parser.add_argument('--prompts', nargs='+', required=True, help='List of prompts to query')
+        parser.add_argument('--prompts', required=True, help='Path to CSV file with prompts or single prompt')
         parser.add_argument('--models', nargs='+', default=['anthropic.claude-3-sonnet-20240229-v1:0'],
                           help='List of model IDs to use')
         parser.add_argument('--schema', help='JSON schema file for structured output')
         parser.add_argument('--pydantic', help='Pydantic model file for structured output')
-        parser.add_argument('--repeat', type=int, default=1, help='Number of times to repeat each query')
+        parser.add_argument('--repeat', type=int, default=1, help='Number of times to repeat each query (only for single prompts)')
         
     elif mode == "gemini":
         # Gemini mode
-        parser.add_argument('--prompts', nargs='+', required=True, help='List of prompts to query')
+        parser.add_argument('--prompts', required=True, help='Path to CSV file with prompts or single prompt')
         parser.add_argument('--models', nargs='+', default=['gemini-pro'],
                           help='List of model IDs to use')
         parser.add_argument('--schema', help='JSON schema file for structured output')
         parser.add_argument('--pydantic', help='Pydantic model file for structured output')
-        parser.add_argument('--repeat', type=int, default=1, help='Number of times to repeat each query')
+        parser.add_argument('--repeat', type=int, default=1, help='Number of times to repeat each query (only for single prompts)')
         
     else:
         # Default mode (single/batch)
-        parser.add_argument('--prompts', nargs='+', required=True, help='List of prompts to query')
+        parser.add_argument('--prompts', required=True, help='Path to CSV file with prompts or single prompt')
         parser.add_argument('--models', nargs='+', default=['gpt-4'],
                           help='List of model IDs to use')
         parser.add_argument('--schema', help='JSON schema file for structured output')
         parser.add_argument('--pydantic', help='Pydantic model file for structured output')
-        parser.add_argument('--repeat', type=int, default=1, help='Number of times to repeat each query')
+        parser.add_argument('--repeat', type=int, default=1, help='Number of times to repeat each query (only for single prompts)')
     
     # Remove the mode argument from sys.argv if it exists
     if mode and len(sys.argv) > 1 and sys.argv[1] == mode:
@@ -46,29 +46,44 @@ def cli(mode=None):
     args = parser.parse_args()
     
     if mode == "aws":
-        from parallm.aws_query import query_aws_bedrock
-        query_aws_bedrock(args.prompts, args.models, args.schema, args.pydantic, args.repeat)
-    elif mode == "gemini":
-        from parallm.gemini_query import query_model_repeat, query_model_all_repeat
-        # For single prompt, use query_model_repeat
-        if len(args.prompts) == 1:
-            result = query_model_repeat(args.prompts[0], args.models[0], args.repeat, args.schema)
+        from parallm.bedrock_query import query_model_repeat, query_model_all
+        # Check if prompts is a single prompt or a CSV file
+        if os.path.isfile(args.prompts):
+            # It's a CSV file, use query_model_all without repeat
+            result = query_model_all(args.prompts, args.models, args.schema)
         else:
-            # For multiple prompts, create a temporary CSV file
-            import tempfile
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
-                f.write("prompt\n")
-                for prompt in args.prompts:
-                    f.write(f"{prompt}\n")
-                temp_file = f.name
-            try:
-                result = query_model_all_repeat(temp_file, args.models, args.repeat, args.schema)
-            finally:
-                os.unlink(temp_file)
+            # It's a single prompt, use query_model_repeat if repeat > 1
+            if args.repeat > 1:
+                result = query_model_repeat(args.prompts, args.models[0], args.repeat, args.schema)
+            else:
+                result = query_model_all(args.prompts, args.models, args.schema)
+        print(result)
+    elif mode == "gemini":
+        from parallm.gemini_query import query_model_repeat, query_model_all
+        # Check if prompts is a single prompt or a CSV file
+        if os.path.isfile(args.prompts):
+            # It's a CSV file, use query_model_all without repeat
+            result = query_model_all(args.prompts, args.models, args.schema)
+        else:
+            # It's a single prompt, use query_model_repeat if repeat > 1
+            if args.repeat > 1:
+                result = query_model_repeat(args.prompts, args.models[0], args.repeat, args.schema)
+            else:
+                result = query_model_all(args.prompts, args.models, args.schema)
         print(result)
     else:
-        from parallm.query import query_llm
-        query_llm(args.prompts, args.models, args.schema, args.pydantic, args.repeat)
+        from parallm.model_query import query_model_repeat, query_model_all
+        # Check if prompts is a single prompt or a CSV file
+        if os.path.isfile(args.prompts):
+            # It's a CSV file, use query_model_all without repeat
+            result = query_model_all(args.prompts, args.models, args.schema)
+        else:
+            # It's a single prompt, use query_model_repeat if repeat > 1
+            if args.repeat > 1:
+                result = query_model_repeat(args.prompts, args.models[0], args.repeat, args.schema)
+            else:
+                result = query_model_all(args.prompts, args.models, args.schema)
+        print(result)
 
 def load_schema(schema_arg, pydantic_arg):
     """Helper function to load schema from either JSON or Pydantic"""
@@ -162,7 +177,7 @@ def handle_batch_query(args, mode="default"):
             print("Schema provided. Running queries sequentially (non-parallel)...")
             t_start = time.time()
             try:
-                prompts_df = pd.read_csv(args.prompts)
+                prompts_df = pd.read_csv(args.prompts, usecols=["prompt"])
                 prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
 
                 models = pd.Series(args.models).str.strip().str.lower().tolist()
@@ -191,7 +206,7 @@ def handle_batch_query(args, mode="default"):
         else:
             print("No schema provided. Running queries in parallel using Bodo...")
             try:
-                prompts_df = pd.read_csv(args.prompts)
+                prompts_df = pd.read_csv(args.prompts, usecols=["prompt"])
                 prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
                 models = pd.Series(args.models).str.strip().str.lower().tolist()
                 models_df = pd.DataFrame({"model": models})

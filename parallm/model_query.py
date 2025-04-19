@@ -54,7 +54,7 @@ def query_model_all(file_path, models, schema=None):
         schema: Optional schema to format responses as JSON
     """
     t0 = time.time()
-    prompts_df = pd.read_csv(file_path)
+    prompts_df = pd.read_csv(file_path, usecols=["prompt"])
     prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
 
     models = pd.Series(models).str.strip().str.lower().tolist()
@@ -92,7 +92,7 @@ def query_model_all_repeat(file_path, models, repeat=1, schema=None):
     creates a Cartesian product of prompts, models, and repeat_index, and queries each combination.
     Returns a DataFrame with columns: prompt, model, repeat_index, response
     """
-    prompts_df = pd.read_csv(file_path)
+    prompts_df = pd.read_csv(file_path, usecols=["prompt"])
     prompts_df["prompt"] = prompts_df["prompt"].str.strip().str.lower()
     models = pd.Series(models).str.strip().str.lower().tolist()
     models_df = pd.DataFrame({"model": models})
