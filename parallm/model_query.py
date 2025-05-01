@@ -11,7 +11,7 @@ from pydantic import BaseModel
 load_dotenv()
 
 @bodo.wrap_python(bodo.string_type)
-def query_model(prompt, model_given="gpt-4o-mini", schema=None):
+def query_model(prompt, model_given="gemini-2.0-flash", schema=None):
     """
     Sends a prompt to the AI Suite and returns the response.
     
@@ -26,7 +26,7 @@ def query_model(prompt, model_given="gpt-4o-mini", schema=None):
     response = model.prompt(prompt, schema=schema)
     return response.text()
 
-def query_model_json(prompt, model_given="gpt-4o-mini", schema=None):
+def query_model_json(prompt, model_given="gemini-2.0-flash", schema=None):
     """
     Sends a prompt to the AI Suite and returns parsed JSON response.
     
@@ -70,7 +70,7 @@ def query_model_all(file_path, models, schema=None):
     return combined_df
 
 @bodo.jit
-def query_model_repeat(prompt, model_given="gpt-4o-mini", repeat=1, schema=None):
+def query_model_repeat(prompt, model_given="gemini-2.0-flash", repeat=1, schema=None):
     """
     Runs the same prompt against the same model N times in parallel using Bodo.
     Returns a DataFrame with columns: repeat_index, response

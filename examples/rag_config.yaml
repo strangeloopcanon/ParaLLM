@@ -1,0 +1,37 @@
+# Example RAG Pipeline Configuration for ParaLLM
+
+pipeline:
+  - name: ingest
+    params:
+      source_path: examples/docs_to_ingest/ # Relative path from where script is run
+      recursive: true
+
+  - name: chunk
+    params:
+      strategy: fixed_size # Options: fixed_size, semantic (placeholder)
+      chunk_size: 100      # Smaller chunk size for this small example
+      overlap: 20
+
+  - name: embed
+    params:
+      # Using a small, fast model for the example
+      embedding_model_name: all-MiniLM-L6-v2 
+
+  - name: index_vector
+    params:
+      vector_store: chromadb
+      collection_name: example_docs
+      # Persist the ChromaDB index within the examples folder
+      persist_directory: examples/chroma_db 
+
+  # Keyword index step - ADDED for hybrid test
+  - name: index_keyword
+    params:
+      # keyword_store: bm25 # Type isn't strictly needed by current implementation
+      index_path: examples/bm25_index.pkl # Path to save/load the index
+
+retrieval:
+  strategy: hybrid # Set to hybrid for testing
+  top_k_vector: 3   # Retrieve top 3 chunks for vector part
+  top_k_keyword: 3 # Retrieve top 3 chunks for keyword part
+  # rerank: false
