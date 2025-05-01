@@ -133,6 +133,79 @@ result = query_model_json("What is the capital of France?", "gpt-4", schema=Resp
 print(result)
 ```
 
+## Retrieval-Augmented Generation (RAG)
+
+ParaLLM now includes a modular RAG pipeline to allow querying language models with context retrieved from your own documents.
+
+### Overview
+
+The RAG system processes your documents through a configurable pipeline:
+
+1.  **Ingestion:** Loads documents from a specified directory. Supports `.txt`, `.pdf`, `.docx`, and `.html`/`.htm` files.
+2.  **Chunking:** Splits documents into smaller chunks using different strategies:
+    *   `fixed_size`: Overlapping chunks of a defined character size.
+    *   `semantic`: Groups sentences together (using NLTK).
+3.  **Embedding:** Generates vector embeddings for each chunk using a specified Sentence Transformer model (e.g., `all-MiniLM-L6-v2`).
+4.  **Indexing:** Stores the chunks, embeddings, and metadata in:
+    *   A vector store (currently ChromaDB) for semantic search.
+    *   A keyword index (using BM25) for lexical search.
+
+When querying, the system retrieves relevant chunks using vector search, keyword search, or a hybrid combination, augments the prompt with this context, and then sends it to the specified language model.
+
+### Configuration (`rag_config.yaml`)
+
+The entire RAG pipeline is configured using a YAML file (e.g., `rag_config.yaml`). This file defines the sequence of steps, parameters for each step (like source paths, chunking strategy, embedding model, index paths), and the retrieval strategy.
+
+See `examples/rag_config.yaml` for a detailed example.
+
+### RAG CLI Usage
+
+Use the `rag` subcommand for building indexes and querying.
+
+**1. Build the RAG Index:**
+
+This command runs the ingestion, chunking, embedding, and indexing pipeline defined in your config file.
+
+```bash
+python -m parallm rag build --config path/to/your_rag_config.yaml
+```
+
+*   Replace `path/to/your_rag_config.yaml` with the actual path to your configuration file.
+*   This needs to be run once initially and then again whenever your source documents or pipeline configuration change.
+*   Indexes (ChromaDB, BM25 pickle file) will be created/updated based on paths specified in the config.
+
+**2. Query the RAG System:**
+
+This command uses a previously built index to retrieve context, augment a prompt, and query an LLM.
+
+```bash
+python -m parallm rag query --config path/to/your_rag_config.yaml --query "Your question here?" --llm-model gpt-4o-mini
+```
+
+*   `--config`: Specifies the RAG configuration file (used to load the retriever and embedding models).
+*   `--query` / `-q`: The question you want to ask.
+*   `--llm-model`: (Optional) The language model to use for generating the final answer (defaults to the model specified in the script, e.g., `gpt-4o-mini`).
+
+### RAG Dependencies
+
+Using the RAG features requires additional dependencies:
+
+```
+PyYAML          # For parsing rag_config.yaml
+sentence-transformers # For embedding generation
+chromadb        # Vector store
+rank_bm25       # Keyword indexing
+pypdf           # PDF ingestion
+python-docx     # DOCX ingestion
+beautifulsoup4  # HTML ingestion
+lxml            # HTML parsing backend for beautifulsoup4
+nltk            # Semantic chunking (sentence tokenization)
+reportlab       # Required by test suite to generate test PDFs
+```
+
+Ensure NLTK's `punkt` tokenizer data is downloaded:
+`python -m nltk.downloader punkt`
+
 ## CSV Format
 
 Your `prompts.csv` file should have a header row with "prompt" as the column name:

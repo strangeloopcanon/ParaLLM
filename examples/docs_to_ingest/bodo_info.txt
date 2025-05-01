@@ -1,0 +1,5 @@
+Bodo is a high-performance computing platform.
+It automatically parallelizes Python code, especially Pandas and NumPy operations.
+Bodo aims to simplify scaling data analytics without rewriting code in Spark or Dask.
+Key benefits include significant speedups and reduced infrastructure complexity.
+It integrates well with existing Python data science ecosystems.
