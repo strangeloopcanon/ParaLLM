@@ -7,31 +7,12 @@ import sys
 from parallm.cli import cli
 
 def main():
-    # Check if we're running as a module (python -m parallm) or directly (parallm)
-    if sys.argv[0].endswith('__main__.py'):
-        # Running as module (python -m parallm)
-        if len(sys.argv) > 1:
-            if sys.argv[1] == "aws":
-                cli("aws")
-            elif sys.argv[1] == "gemini":
-                cli("gemini")
-            else:
-                cli()
-        else:
-            cli()
-    else:
-        # Running directly (parallm)
-        if len(sys.argv) > 1:
-            if sys.argv[1] == "aws":
-                sys.argv.pop(1)  # Remove the mode argument
-                cli("aws")
-            elif sys.argv[1] == "gemini":
-                sys.argv.pop(1)  # Remove the mode argument
-                cli("gemini")
-            else:
-                cli()
-        else:
-            cli()
+    # Typer's cli() will automatically use sys.argv.
+    # No need to inspect sys.argv[0] or sys.argv[1] as done previously.
+    # The previous logic for distinguishing `python -m` vs direct script,
+    # and for popping argv or passing strings like "gemini" to cli(), has been removed
+    # as it can conflict with Typer's own argument processing.
+    cli()
 
 if __name__ == "__main__":
     main()

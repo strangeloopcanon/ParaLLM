@@ -18,7 +18,7 @@ from parallm.rag.pipeline import run_pipeline as run_rag_build_pipeline
 from parallm.rag.pipeline import setup_retriever as setup_rag_retriever
 
 # Main Typer application
-app = typer.Typer(help="Parallel LLM Query Tool with RAG support.")
+cli = typer.Typer(help="Parallel LLM Query Tool with RAG support.")
 
 # --- Helper Functions (mostly unchanged from original) ---
 
@@ -166,7 +166,7 @@ def run_core_query(
 
 # --- Typer Commands ---
 
-@app.command(name="default", help="Run queries using default provider (e.g., OpenAI via llm). Add commands like aws or gemini for specific providers.")
+@cli.command(name="default", help="Run queries using default provider (e.g., OpenAI via llm). Add commands like aws or gemini for specific providers.")
 def run_default(
     prompts: str = typer.Argument(..., help="Single prompt text or path to CSV file with prompts."),
     models: List[str] = typer.Option(["gpt-4o-mini"], "--models", "-m", help="List of model IDs to use."),
@@ -176,7 +176,7 @@ def run_default(
 ):
     run_core_query(prompts, models, schema, pydantic, repeat, model_query, "default")
 
-@app.command()
+@cli.command()
 def aws(
     prompts: str = typer.Argument(..., help="Single prompt text or path to CSV file with prompts."),
     models: List[str] = typer.Option(["anthropic.claude-3-sonnet-20240229-v1:0"], "--models", "-m", help="List of AWS Bedrock model IDs to use."),
@@ -187,7 +187,7 @@ def aws(
     """Run queries using AWS Bedrock provider."""
     run_core_query(prompts, models, schema, pydantic, repeat, bedrock_query, "AWS")
 
-@app.command()
+@cli.command()
 def gemini(
     prompts: str = typer.Argument(..., help="Single prompt text or path to CSV file with prompts."),
     models: List[str] = typer.Option(["gemini-pro"], "--models", "-m", help="List of Google Gemini model IDs to use."),
@@ -200,7 +200,7 @@ def gemini(
 
 # --- RAG Subcommand --- 
 rag_app = typer.Typer(help="Build and query RAG indexes.")
-app.add_typer(rag_app, name="rag")
+cli.add_typer(rag_app, name="rag")
 
 @rag_app.command()
 def build(
@@ -283,4 +283,4 @@ Answer:"""
 
 # Entry point for the CLI
 if __name__ == "__main__":
-    app()
+    cli()
