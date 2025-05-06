@@ -34,13 +34,13 @@ Process multiple prompts from a CSV file with one or more models:
 
 ```bash
 # Default mode (OpenAI/llm)
-parallm --prompts data/prompts.csv --models gpt-4 claude-3-sonnet-20240229
+parallm default data/prompts.csv --models gpt-4 claude-3-sonnet-20240229
 
 # AWS Bedrock mode
-parallm aws --prompts data/prompts.csv --models anthropic.claude-3-sonnet-20240229 amazon.titan-text-express-v1
+parallm aws data/prompts.csv --models anthropic.claude-3-sonnet-20240229 amazon.titan-text-express-v1
 
 # Gemini mode
-parallm gemini --prompts data/prompts.csv --models gemini-2.0-flash
+parallm gemini data/prompts.csv --models gemini-2.0-flash
 ```
 
 ### Single Prompt Processing
@@ -49,13 +49,13 @@ Process a single prompt with optional repeat functionality:
 
 ```bash
 # Default mode (OpenAI/llm)
-parallm --prompts "What is the capital of France?" --models gpt-4 --repeat 5
+parallm default "What is the capital of France?" --models gpt-4 --repeat 5
 
 # AWS Bedrock mode
-parallm aws --prompts "What is the capital of France?" --models anthropic.claude-3-sonnet-20240229 --repeat 5
+parallm aws "What is the capital of France?" --models anthropic.claude-3-sonnet-20240229 --repeat 5
 
 # Gemini mode
-parallm gemini --prompts "What is the capital of France?" --models gemini-2.0-flash --repeat 5
+parallm gemini "What is the capital of France?" --models gemini-2.0-flash --repeat 5
 ```
 
 ### Structured Output
@@ -64,7 +64,7 @@ Get responses formatted according to a JSON schema or Pydantic model:
 
 ```bash
 # Using a JSON schema
-parallm --prompts data/prompts.csv --models gpt-4 --schema '{
+parallm default data/prompts.csv --models gpt-4 --schema '{
   "type": "object",
   "properties": {
     "answer": {"type": "string"},
@@ -74,10 +74,10 @@ parallm --prompts data/prompts.csv --models gpt-4 --schema '{
 }'
 
 # Using a schema from file
-parallm --prompts data/prompts.csv --models gpt-4 --schema schema.json
+parallm default data/prompts.csv --models gpt-4 --schema schema.json
 
 # Using a Pydantic model
-parallm --prompts data/prompts.csv --models gpt-4 --pydantic models.py:ResponseModel
+parallm default data/prompts.csv --models gpt-4 --pydantic models.py:ResponseModel
 ```
 
 ## Python API Usage
