@@ -5,7 +5,7 @@ import json
 import sys
 import time
 import os
-from typing import List, Optional
+from typing import Any, List, Optional
 from pathlib import Path
 
 # Import core query modules
