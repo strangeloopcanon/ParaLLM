@@ -1,5 +1,10 @@
 modelName,modelId,providerName,inputModalities,outputModalities,responseStreamingSupported,customizationsSupported,inferenceTypesSupported,modelLifecycle.status
 Titan Text Large,amazon.titan-tg1-large,Amazon,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Nova Premier,amazon.nova-premier-v1:0:8k,Amazon,TEXT|IMAGE|VIDEO,TEXT,True,,,ACTIVE
+Nova Premier,amazon.nova-premier-v1:0:20k,Amazon,TEXT|IMAGE|VIDEO,TEXT,True,,,ACTIVE
+Nova Premier,amazon.nova-premier-v1:0:1000k,Amazon,TEXT|IMAGE|VIDEO,TEXT,True,,,ACTIVE
+Nova Premier,amazon.nova-premier-v1:0:mm,Amazon,TEXT|IMAGE|VIDEO,TEXT,True,,,ACTIVE
+Nova Premier,amazon.nova-premier-v1:0,Amazon,TEXT|IMAGE|VIDEO,TEXT,True,,INFERENCE_PROFILE,ACTIVE
 Titan Text Embeddings v2,amazon.titan-embed-g1-text-02,Amazon,TEXT,EMBEDDING,,,ON_DEMAND,ACTIVE
 Titan Text G1 - Lite,amazon.titan-text-lite-v1:0:4k,Amazon,TEXT,TEXT,True,FINE_TUNING|CONTINUED_PRE_TRAINING,PROVISIONED,ACTIVE
 Titan Text G1 - Lite,amazon.titan-text-lite-v1,Amazon,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
@@ -17,8 +22,6 @@ Titan Image Generator G1,amazon.titan-image-generator-v1:0,Amazon,TEXT|IMAGE,IMA
 Titan Image Generator G1,amazon.titan-image-generator-v1,Amazon,TEXT|IMAGE,IMAGE,,,ON_DEMAND,ACTIVE
 Titan Image Generator G1 v2,amazon.titan-image-generator-v2:0,Amazon,TEXT|IMAGE,IMAGE,,FINE_TUNING,PROVISIONED|ON_DEMAND,ACTIVE
 Rerank 1.0,amazon.rerank-v1:0,Amazon,TEXT,TEXT,False,,ON_DEMAND,ACTIVE
-SDXL 1.0,stability.stable-diffusion-xl-v1:0,Stability AI,TEXT|IMAGE,IMAGE,,,PROVISIONED,LEGACY
-SDXL 1.0,stability.stable-diffusion-xl-v1,Stability AI,TEXT|IMAGE,IMAGE,,,ON_DEMAND,LEGACY
 SD3 Large 1.0,stability.sd3-large-v1:0,Stability AI,TEXT|IMAGE,IMAGE,,,ON_DEMAND,LEGACY
 Stable Diffusion 3.5 Large,stability.sd3-5-large-v1:0,Stability AI,TEXT|IMAGE,IMAGE,,,ON_DEMAND,ACTIVE
 Stable Image Core 1.0,stability.stable-image-core-v1:0,Stability AI,TEXT,IMAGE,,,ON_DEMAND,LEGACY
@@ -30,7 +33,7 @@ Claude 3.5 Sonnet v2,anthropic.claude-3-5-sonnet-20241022-v2:0:51k,Anthropic,TEX
 Claude 3.5 Sonnet v2,anthropic.claude-3-5-sonnet-20241022-v2:0:200k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
 Claude 3.5 Sonnet v2,anthropic.claude-3-5-sonnet-20241022-v2:0,Anthropic,TEXT|IMAGE,TEXT,True,,ON_DEMAND,ACTIVE
 Claude 3.7 Sonnet,anthropic.claude-3-7-sonnet-20250219-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
-Claude 3.5 Haiku,anthropic.claude-3-5-haiku-20241022-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,ON_DEMAND,ACTIVE
+Claude 3.5 Haiku,anthropic.claude-3-5-haiku-20241022-v1:0,Anthropic,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
 Claude Instant,anthropic.claude-instant-v1:2:100k,Anthropic,TEXT,TEXT,True,,PROVISIONED,LEGACY
 Claude Instant,anthropic.claude-instant-v1,Anthropic,TEXT,TEXT,True,,ON_DEMAND,LEGACY
 Claude,anthropic.claude-v2:0:18k,Anthropic,TEXT,TEXT,True,,PROVISIONED,LEGACY
@@ -53,6 +56,8 @@ Claude 3.5 Sonnet,anthropic.claude-3-5-sonnet-20240620-v1:0:18k,Anthropic,TEXT|I
 Claude 3.5 Sonnet,anthropic.claude-3-5-sonnet-20240620-v1:0:51k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
 Claude 3.5 Sonnet,anthropic.claude-3-5-sonnet-20240620-v1:0:200k,Anthropic,TEXT|IMAGE,TEXT,True,,PROVISIONED,ACTIVE
 Claude 3.5 Sonnet,anthropic.claude-3-5-sonnet-20240620-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,ON_DEMAND|INFERENCE_PROFILE,ACTIVE
+Claude Opus 4,anthropic.claude-opus-4-20250514-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Claude Sonnet 4,anthropic.claude-sonnet-4-20250514-v1:0,Anthropic,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
 Command,cohere.command-text-v14:7:4k,Cohere,TEXT,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
 Command,cohere.command-text-v14,Cohere,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
 Command R,cohere.command-r-v1:0,Cohere,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
@@ -68,22 +73,26 @@ DeepSeek-R1,deepseek.r1-v1:0,DeepSeek,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
 Llama 3 8B Instruct,meta.llama3-8b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
 Llama 3 70B Instruct,meta.llama3-70b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
 Llama 3.1 8B Instruct,meta.llama3-1-8b-instruct-v1:0:128k,Meta,TEXT,TEXT,True,FINE_TUNING|DISTILLATION,PROVISIONED,ACTIVE
-Llama 3.1 8B Instruct,meta.llama3-1-8b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Llama 3.1 8B Instruct,meta.llama3-1-8b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND|INFERENCE_PROFILE,ACTIVE
 Llama 3.1 70B Instruct,meta.llama3-1-70b-instruct-v1:0:128k,Meta,TEXT,TEXT,True,FINE_TUNING|DISTILLATION,PROVISIONED,ACTIVE
-Llama 3.1 70B Instruct,meta.llama3-1-70b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
+Llama 3.1 70B Instruct,meta.llama3-1-70b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND|INFERENCE_PROFILE,ACTIVE
 Llama 3.1 405B Instruct,meta.llama3-1-405b-instruct-v1:0,Meta,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
 Llama 3.2 11B Instruct,meta.llama3-2-11b-instruct-v1:0:128k,Meta,TEXT|IMAGE,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
 Llama 3.2 11B Instruct,meta.llama3-2-11b-instruct-v1:0,Meta,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
 Llama 3.2 90B Instruct,meta.llama3-2-90b-instruct-v1:0:128k,Meta,TEXT|IMAGE,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
 Llama 3.2 90B Instruct,meta.llama3-2-90b-instruct-v1:0,Meta,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
-Llama 3.2 1B Instruct,meta.llama3-2-1b-instruct-v1:0:128k,Meta,TEXT,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
+Llama 3.2 1B Instruct,meta.llama3-2-1b-instruct-v1:0:128k,Meta,TEXT,TEXT,True,FINE_TUNING|DISTILLATION,PROVISIONED,ACTIVE
 Llama 3.2 1B Instruct,meta.llama3-2-1b-instruct-v1:0,Meta,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
-Llama 3.2 3B Instruct,meta.llama3-2-3b-instruct-v1:0:128k,Meta,TEXT,TEXT,True,FINE_TUNING,PROVISIONED,ACTIVE
+Llama 3.2 3B Instruct,meta.llama3-2-3b-instruct-v1:0:128k,Meta,TEXT,TEXT,True,FINE_TUNING|DISTILLATION,PROVISIONED,ACTIVE
 Llama 3.2 3B Instruct,meta.llama3-2-3b-instruct-v1:0,Meta,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
 Llama 3.3 70B Instruct,meta.llama3-3-70b-instruct-v1:0,Meta,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Llama 4 Scout 17B Instruct,meta.llama4-scout-17b-instruct-v1:0,Meta,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Llama 4 Maverick 17B Instruct,meta.llama4-maverick-17b-instruct-v1:0,Meta,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
 Mistral 7B Instruct,mistral.mistral-7b-instruct-v0:2,Mistral AI,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
 Mixtral 8x7B Instruct,mistral.mixtral-8x7b-instruct-v0:1,Mistral AI,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
 Mistral Large (24.02),mistral.mistral-large-2402-v1:0,Mistral AI,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
 Mistral Large (24.07),mistral.mistral-large-2407-v1:0,Mistral AI,TEXT,TEXT,True,,ON_DEMAND,ACTIVE
 Pixtral Large (25.02),mistral.pixtral-large-2502-v1:0,Mistral AI,TEXT|IMAGE,TEXT,True,,INFERENCE_PROFILE,ACTIVE
 Ray v2,luma.ray-v2:0,Luma AI,TEXT,VIDEO,False,,ON_DEMAND,ACTIVE
+Palmyra X4,writer.palmyra-x4-v1:0,Writer,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
+Palmyra X5,writer.palmyra-x5-v1:0,Writer,TEXT,TEXT,True,,INFERENCE_PROFILE,ACTIVE
