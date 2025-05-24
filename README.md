@@ -52,7 +52,7 @@ Process a single prompt with optional repeat functionality:
 parallm default "What is the capital of France?" --models gpt-4 --repeat 5
 
 # AWS Bedrock mode
-parallm aws "What is the capital of France?" --models anthropic.claude-3-sonnet-20240229 --repeat 5
+parallm aws "What is the capital of France?" --models amazon.titan-text-express-v1 --repeat 5
 
 # Gemini mode
 parallm gemini "What is the capital of France?" --models gemini-2.0-flash --repeat 5
@@ -64,7 +64,7 @@ Get responses formatted according to a JSON schema or Pydantic model:
 
 ```bash
 # Using a JSON schema
-parallm default data/prompts.csv --models gpt-4 --schema '{
+parallm default data/prompts.csv --models gpt-4o --schema '{
   "type": "object",
   "properties": {
     "answer": {"type": "string"},
@@ -74,10 +74,10 @@ parallm default data/prompts.csv --models gpt-4 --schema '{
 }'
 
 # Using a schema from file
-parallm default data/prompts.csv --models gpt-4 --schema schema.json
+parallm default data/prompts.csv --models gpt-4o --schema schema.json
 
 # Using a Pydantic model
-parallm default data/prompts.csv --models gpt-4 --pydantic models.py:ResponseModel
+parallm default data/prompts.csv --models gpt-4o --pydantic models.py:ResponseModel
 ```
 
 ## Python API Usage
@@ -106,11 +106,11 @@ print(df)
 from parallm import query_model_repeat, bedrock_query_model_repeat, gemini_query_model_repeat
 
 # Default mode (OpenAI/llm)
-df = query_model_repeat("What is the capital of France?", "gpt-4", repeat=5)
+df = query_model_repeat("What is the capital of France?", "gpt-4o", repeat=5)
 print(df)
 
 # AWS Bedrock
-df = bedrock_query_model_repeat("What is the capital of France?", "anthropic.claude-3-sonnet-20240229", repeat=5)
+df = bedrock_query_model_repeat("What is the capital of France?", "amazon.titan-text-express-v1", repeat=5)
 print(df)
 
 # Gemini
@@ -129,7 +129,7 @@ class Response(BaseModel):
     answer: str
     confidence: float
 
-result = query_model_json("What is the capital of France?", "gpt-4", schema=Response)
+result = query_model_json("What is the capital of France?", "gpt-4o", schema=Response)
 print(result)
 ```
 
