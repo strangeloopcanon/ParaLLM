@@ -7,7 +7,7 @@ ParaLLM is a command-line tool and Python package for efficiently querying langu
 - **Multi-Model Querying:** Query multiple LLMs simultaneously, comparing their outputs
 - **CSV Input/Output:** Use CSV files for batch processing of prompts
 - **Structured JSON Output:** Get responses formatted to JSON schemas or Pydantic models
-- **High Performance:** Leverages Bodo for parallel execution of queries
+- **High Performance:** Leverages Bodo for acceleration. Bodo installs with ParaLLM and acts as a drop‑in replacement for pandas; the code prefers `bodo.pandas` automatically.
 - **Multiple Providers:** Support for OpenAI, AWS Bedrock, and Google Gemini
 
 ## Installation
@@ -15,6 +15,8 @@ ParaLLM is a command-line tool and Python package for efficiently querying langu
 ```bash
 pip install parallm
 ```
+
+Note: ParaLLM requires Python 3.9+ due to Bodo’s minimum version.
 
 Or install from source:
 
@@ -24,7 +26,7 @@ cd parallm
 pip install -e .
 ```
 
-You'll need to install Simon Willison's `llm` package and set up your API keys. For AWS Bedrock, ensure you have AWS credentials configured. For Gemini, set the `GEMINI_API_KEY` environment variable.
+You'll need to set up your API keys. For AWS Bedrock, ensure you have AWS credentials configured. For Gemini, set the `GEMINI_API_KEY` environment variable. The `llm` package is installed automatically.
 
 ## Command-Line Usage
 
@@ -219,13 +221,13 @@ How does blockchain work?
 
 ## Dependencies
 
+- **bodo:** Installed by default; provides a pandas‑compatible DataFrame engine and acceleration. ParaLLM automatically imports `bodo.pandas` when available.
 - **pandas:** Data processing and CSV handling
-- **bodo:** Parallel execution for performance
 - **llm:** Simon Willison's LLM interface library
 - **python-dotenv:** Environment variable management
 - **pydantic:** Data validation for structured output
 - **boto3:** AWS SDK for Python (required for AWS Bedrock)
-- **google-generativeai:** Google's Gemini API client (required for Gemini)
+- **Google GenAI:** Gemini API client (`google-genai` or equivalent) for Gemini
 
 ## Author
 
