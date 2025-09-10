@@ -1,8 +1,8 @@
 # gemini_query.py
-import pandas as pd
+import bodo.pandas as pd
 import time
 import json
-import bodo
+# import bodo
 from dotenv import load_dotenv
 from typing import Dict, Any, Optional, Union, Type, List
 from pydantic import BaseModel
@@ -11,7 +11,7 @@ import os
 
 load_dotenv()
 
-@bodo.wrap_python(bodo.string_type)
+# @bodo.wrap_python(bodo.string_type)
 def query_model(prompt, model_id="gemini-2.0-flash", schema=None):
     """
     Sends a prompt to Google Gemini and returns the response.
@@ -90,7 +90,7 @@ def query_model_json(prompt, model_id="gemini-2.0-flash", schema=None):
     except json.JSONDecodeError:
         raise ValueError("Response could not be parsed as JSON")
 
-@bodo.jit
+# # @bodo.jit
 def query_model_all(file_path, models, schema=None):
     """
     Reads the prompts from `file_path` and a list of model IDs,
@@ -117,7 +117,7 @@ def query_model_all(file_path, models, schema=None):
     print("Processing time:", time.time() - t0)
     return combined_df 
 
-@bodo.jit
+# # @bodo.jit
 def query_model_repeat(prompt, model_id="gemini-2.0-flash", repeat=1, schema=None):
     """
     Runs the same prompt against the same model N times in parallel using Bodo.
@@ -133,7 +133,7 @@ def query_model_repeat(prompt, model_id="gemini-2.0-flash", repeat=1, schema=Non
     df["response"] = df.apply(run_query, axis=1)
     return df[["repeat_index", "response"]] 
 
-@bodo.jit
+# # @bodo.jit
 def query_model_all_repeat(file_path, models, repeat=1, schema=None):
     """
     Reads the prompts from `file_path` and a list of model IDs,

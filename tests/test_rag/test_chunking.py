@@ -36,8 +36,8 @@ def test_chunk_fixed_size_basic(sample_dataframe):
     doc1_chunks = chunked_df[chunked_df['doc_id'] == 'doc1']
     assert len(doc1_chunks) > 2 # Expect multiple chunks
     assert doc1_chunks.iloc[0]['chunk_text'] == 'This is the first sentence. Th' # First 30 chars
-    assert doc1_chunks.iloc[1]['chunk_text'].startswith(' sentence. This is the second') # Starts after overlap
-    assert doc1_chunks.iloc[1]['chunk_text'].endswith(' senten')
+    assert doc1_chunks.iloc[1]['chunk_text'] == 'ntence. This is the second sen' # Starts at position 20 (30-10 overlap)
+    assert len(doc1_chunks.iloc[1]['chunk_text']) == 30 # Should be exactly 30 chars
     assert doc1_chunks.iloc[0]['chunk_id'] == 'doc1_chunk_0'
     assert doc1_chunks.iloc[1]['chunk_id'] == 'doc1_chunk_1'
     assert doc1_chunks.iloc[0]['metadata']['filename'] == 'doc1.txt'

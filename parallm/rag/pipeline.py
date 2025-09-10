@@ -1,5 +1,5 @@
-from typing import Dict, Any, List, Callable
 import pandas as pd
+from typing import Dict, Any, List, Callable
 from functools import partial
 
 from sentence_transformers import SentenceTransformer

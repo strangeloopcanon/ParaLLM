@@ -104,21 +104,27 @@ def test_create_bm25_index_missing_cols():
 
 # --- Tests for load_bm25_index ---
 
+class MockBM25ForPickling:
+    """A simple mock BM25 object that can be pickled"""
+    def get_scores(self, query):
+        return [0.1, 0.2]
+
 def test_load_bm25_index_success(mock_bm25_okapi, tmp_path):
     """Test successful loading of a pickled index file."""
     _, mock_instance = mock_bm25_okapi
-    mock_instance.get_scores = MagicMock() 
     
+    # Use the picklable mock class
+    simple_mock = MockBM25ForPickling()
     index_path = tmp_path / "load_test.pkl"
     valid_data = {
-        'bm25_index': mock_instance,
+        'bm25_index': simple_mock,
         'chunk_mapping': {0: {'chunk_id': 'c1'}, 1: {'chunk_id': 'c2'}}
     }
     with open(index_path, "wb") as f: 
         pickle.dump(valid_data, f)
         
     bm25, mapping = load_bm25_index(str(index_path))
-    assert bm25 is mock_instance
+    assert hasattr(bm25, 'get_scores')  # Verify it has the expected method
     assert mapping == valid_data['chunk_mapping']
 
 def test_load_bm25_index_file_not_found():
@@ -138,7 +144,7 @@ def test_load_bm25_index_bad_pickle(tmp_path):
 def test_load_bm25_index_missing_keys(tmp_path):
     """Test loading pickle data missing required keys."""
     index_path = tmp_path / "missing_keys.pkl"
-    invalid_data = {'index': MagicMock(), 'map': {}}
+    invalid_data = {'index': 'simple_object', 'map': {}}
     with open(index_path, "wb") as f:
         pickle.dump(invalid_data, f)
         

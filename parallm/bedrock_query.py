@@ -1,9 +1,9 @@
 # bedrock_query.py
-import pandas as pd
+import bodo.pandas as pd
 import time
 import json
 import boto3
-import bodo
+# import bodo
 from dotenv import load_dotenv
 from typing import Dict, Any, Optional, Union, Type
 from pydantic import BaseModel
@@ -11,7 +11,7 @@ from botocore.exceptions import ClientError
 
 load_dotenv()
 
-@bodo.wrap_python(bodo.string_type)
+# @bodo.wrap_python(bodo.string_type)
 def query_model(prompt, model_id="anthropic.claude-3-sonnet-20240229", schema=None):
     """
     Sends a prompt to AWS Bedrock and returns the response.
@@ -142,7 +142,7 @@ def query_model_json(prompt, model_id="anthropic.claude-3-sonnet-20240229", sche
     result = query_model(prompt, model_id, schema)
     return json.loads(result)
 
-@bodo.jit
+# # @bodo.jit
 def query_model_all(file_path, models, schema=None):
     """
     Reads the prompts from `file_path` and a list of model IDs,
@@ -169,7 +169,7 @@ def query_model_all(file_path, models, schema=None):
     print("Processing time:", time.time() - t0)
     return combined_df 
 
-@bodo.jit
+# # @bodo.jit
 def query_model_repeat(prompt, model_id="anthropic.claude-3-sonnet-20240229", repeat=1, schema=None):
     """
     Runs the same prompt against the same model N times in parallel using Bodo.
@@ -185,7 +185,7 @@ def query_model_repeat(prompt, model_id="anthropic.claude-3-sonnet-20240229", re
     df["response"] = df.apply(run_query, axis=1)
     return df[["repeat_index", "response"]] 
 
-@bodo.jit
+# # @bodo.jit
 def query_model_all_repeat(file_path, models, repeat=1, schema=None):
     """
     Reads the prompts from `file_path` and a list of model IDs,

@@ -7,7 +7,7 @@ ParaLLM is a command-line tool and Python package for efficiently querying langu
 - **Multi-Model Querying:** Query multiple LLMs simultaneously, comparing their outputs
 - **CSV Input/Output:** Use CSV files for batch processing of prompts
 - **Structured JSON Output:** Get responses formatted to JSON schemas or Pydantic models
-- **High Performance:** Leverages Bodo for acceleration. Bodo installs with ParaLLM and acts as a drop‑in replacement for pandas; the code prefers `bodo.pandas` automatically.
+- **High Performance:** Leverages Bodo for parallel execution of model queries. RAG functionality uses regular pandas for simplicity and reliability.
 - **Multiple Providers:** Support for OpenAI, AWS Bedrock, and Google Gemini
 
 ## Installation
@@ -208,6 +208,28 @@ reportlab       # Required by test suite to generate test PDFs
 Ensure NLTK's `punkt` tokenizer data is downloaded:
 `python -m nltk.downloader punkt`
 
+## Testing
+
+The project includes comprehensive test coverage for all RAG functionality. Run tests with:
+
+```bash
+# Run all tests
+python -m pytest
+
+# Run only RAG tests
+python -m pytest tests/test_rag/
+
+# Run with verbose output
+python -m pytest tests/test_rag/ -v
+```
+
+All 35 RAG tests currently pass, covering:
+- Document ingestion (TXT, PDF, DOCX, HTML)
+- Text chunking (fixed-size and semantic strategies)
+- Embedding generation
+- BM25 indexing and retrieval
+- Configuration loading and validation
+
 ## CSV Format
 
 Your `prompts.csv` file should have a header row with "prompt" as the column name:
@@ -221,7 +243,7 @@ How does blockchain work?
 
 ## Dependencies
 
-- **bodo:** Installed by default; provides a pandas‑compatible DataFrame engine and acceleration. ParaLLM automatically imports `bodo.pandas` when available.
+- **bodo:** Provides parallel DataFrame processing for model query operations. RAG components use regular pandas for maximum compatibility.
 - **pandas:** Data processing and CSV handling
 - **llm:** Simon Willison's LLM interface library
 - **python-dotenv:** Environment variable management

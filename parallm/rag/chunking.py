@@ -1,19 +1,8 @@
 import pandas as pd
 from typing import List, Dict, Any
 
-# Semantic chunking dependency
-try:
-    import nltk
-    # Ensure punkt is downloaded (attempt during setup or first use)
-    try:
-        nltk.data.find('tokenizers/punkt')
-    except nltk.downloader.DownloadError:
-        print("NLTK 'punkt' tokenizer not found. Downloading...")
-        nltk.download('punkt')
-    nltk_installed = True
-except ImportError:
-    print("Warning: NLTK not installed. Semantic chunking will not be available.")
-    nltk_installed = False
+# NLTK is optional and only loaded when semantic chunking is used
+nltk_installed = False
 
 # Placeholder for potential future imports like NLTK, spaCy, langchain splitters
 
@@ -28,20 +17,32 @@ def _chunk_text_fixed_size(text: str, chunk_size: int, overlap: int) -> List[str
     start_index = 0
     while start_index < len(text):
         end_index = start_index + chunk_size
-        chunks.append(text[start_index:end_index])
+        chunk_text = text[start_index:end_index]
+        chunks.append(chunk_text)
+        
+        # Move start position by chunk_size - overlap for next iteration
         start_index += chunk_size - overlap
-        # Ensure we don't overshoot if the last chunk is smaller or next overlap is past end
-        if start_index >= len(text) and len(chunks[-1]) < chunk_size:
-             break 
-        elif start_index + overlap >= len(text):
-             break 
+        
+        # Stop if we've processed all text
+        if start_index >= len(text):
+            break
             
     return chunks
 
 def _chunk_text_semantic(text: str, sentences_per_chunk: int = 3) -> List[str]:
     """Chunks text by grouping sentences using NLTK (requires 'punkt' data)."""
-    if not nltk_installed:
-        raise ImportError("NLTK is required for semantic chunking.")
+    # Lazy-load NLTK only when semantic chunking is actually used
+    try:
+        import nltk
+        # Ensure punkt is downloaded
+        try:
+            nltk.data.find('tokenizers/punkt')
+        except nltk.downloader.DownloadError:
+            print("NLTK 'punkt' tokenizer not found. Downloading...")
+            nltk.download('punkt')
+    except ImportError:
+        raise ImportError("NLTK is required for semantic chunking. Install with: pip install nltk")
+    
     if not text:
         return []
         

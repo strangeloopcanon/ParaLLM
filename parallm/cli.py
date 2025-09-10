@@ -1,5 +1,5 @@
 # cli.py
-import pandas as pd
+import bodo.pandas as pd
 import typer
 import json
 import sys
