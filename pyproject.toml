@@ -7,7 +7,7 @@ license-files = []  # override the default behavior
 
 [project]
 name = "parallm"
-version = "0.2.4"
+version = "0.2.5"
 description = "CLI tool for querying multiple models with prompts from a CSV with schema support"
 authors = [
   { name = "Rohit Krishnan", email = "rohit.krishnan@gmail.com" }
@@ -20,8 +20,8 @@ requires-python = ">=3.9"
 dependencies = [
   "bodo",            # Install Bodo by default; acts as drop-in replacement for pandas
   "llm>=0.23",
-  "pandas>=2.0",
-  "python-dotenv>=1.0",
+  "pandas",
+  "python-dotenv",
   "pydantic>=2.0"
 ]
 
